@@ -1,4 +1,4 @@
-import chrono from "chrono-node"
+import * as chrono from "chrono-node"
 import cronParser from "cron-parser"
 import { StateStore } from "./state.js"
 import { auditLog } from "./audit.js"

@@ -86,7 +86,7 @@ export class GreenBotStack extends cdk.Stack {
         // ── Security group — outbound only (Discord uses outbound WebSocket) ───
         const sg = new ec2.SecurityGroup(this, "GreenBotSG", {
             vpc,
-            description: "GreenBot EC2 — outbound only",
+            description: "GreenBot EC2 - outbound only",
             allowAllOutbound: true,
         })
 
@@ -94,8 +94,10 @@ export class GreenBotStack extends cdk.Stack {
         const userData = ec2.UserData.forLinux()
         userData.addCommands(
             "set -e",
-            // Node.js 20 on Amazon Linux 2023
-            "dnf install -y nodejs npm unzip",
+            // Node.js 20 via NodeSource (AL2023 default dnf gives Node 18)
+            "dnf install -y curl unzip",
+            "curl -fsSL https://rpm.nodesource.com/setup_20.x | bash -",
+            "dnf install -y nodejs",
             "mkdir -p /opt/greenbot",
             // Download source bundle from CDK asset bucket
             `aws s3 cp s3://${codeAsset.s3BucketName}/${codeAsset.s3ObjectKey} /tmp/greenbot.zip`,
@@ -135,6 +137,7 @@ SVCEOF`,
         // ── EC2 t4g.nano (Graviton2 arm64) ────────────────────────────────────
         const instance = new ec2.Instance(this, "GreenBotInstance", {
             vpc,
+            vpcSubnets: { subnetType: ec2.SubnetType.PUBLIC },
             instanceType: ec2.InstanceType.of(
                 ec2.InstanceClass.T4G,
                 ec2.InstanceSize.NANO,
