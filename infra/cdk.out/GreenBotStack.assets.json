@@ -1,0 +1,34 @@
+{
+  "version": "52.0.0",
+  "files": {
+    "8db500e90e4e323a61829c5100c77871751188394a14a2f161462805bf300d0a": {
+      "displayName": "GreenBotStack Template",
+      "source": {
+        "path": "GreenBotStack.template.json",
+        "packaging": "file"
+      },
+      "destinations": {
+        "current_account-current_region-f49e84f5": {
+          "bucketName": "cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}",
+          "objectKey": "8db500e90e4e323a61829c5100c77871751188394a14a2f161462805bf300d0a.json",
+          "assumeRoleArn": "arn:${AWS::Partition}:iam::${AWS::AccountId}:role/cdk-hnb659fds-file-publishing-role-${AWS::AccountId}-${AWS::Region}"
+        }
+      }
+    }
+  },
+  "dockerImages": {
+    "d2740eb5f2c64c3d60777d684d9078f1a005db89b57c67da406e2a5c29f51a5b": {
+      "displayName": "GreenBotService/TaskDef/greenbot/AssetImage",
+      "source": {
+        "directory": "asset.d2740eb5f2c64c3d60777d684d9078f1a005db89b57c67da406e2a5c29f51a5b"
+      },
+      "destinations": {
+        "current_account-current_region-4093d30c": {
+          "repositoryName": "cdk-hnb659fds-container-assets-${AWS::AccountId}-${AWS::Region}",
+          "imageTag": "d2740eb5f2c64c3d60777d684d9078f1a005db89b57c67da406e2a5c29f51a5b",
+          "assumeRoleArn": "arn:${AWS::Partition}:iam::${AWS::AccountId}:role/cdk-hnb659fds-image-publishing-role-${AWS::AccountId}-${AWS::Region}"
+        }
+      }
+    }
+  }
+}

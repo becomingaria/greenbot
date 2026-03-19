@@ -1,0 +1,29 @@
+{
+    "name": "green-bot",
+    "version": "0.1.0",
+    "private": true,
+    "description": "G.R.E.E.N. - Governance, Response, Enforcement & Engagement Node (Discord server ops bot)",
+    "main": "src/index.js",
+    "type": "module",
+    "scripts": {
+        "start": "node src/index.js",
+        "dev": "nodemon --watch src --exec \"node src/index.js\"",
+        "lint": "eslint ."
+    },
+    "dependencies": {
+        "@aws-sdk/client-s3": "^3.0.0",
+        "@aws-sdk/client-ssm": "^3.0.0",
+        "@aws-sdk/client-dynamodb": "^3.0.0",
+        "@discordjs/builders": "^1.0.0",
+        "@discordjs/rest": "^1.0.0",
+        "cron-parser": "^4.0.0",
+        "chrono-node": "^2.3.0",
+        "discord.js": "^14.0.0",
+        "joi": "^17.0.0",
+        "yaml": "^2.3.0"
+    },
+    "devDependencies": {
+        "nodemon": "^2.0.0",
+        "eslint": "^8.0.0"
+    }
+}

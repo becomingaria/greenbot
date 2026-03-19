@@ -1,0 +1,123 @@
+# =========================
+# Discord Server Ops Bot Config (v1)
+# HOW TO USE:
+# 1) In Discord, go to the bot's private admin channel (admin.controlChannelId).
+# 2) Run /config export to get the current config as a file.
+# 3) Edit this YAML locally.
+# 4) Upload the updated YAML file in the admin channel.
+# 5) Run /config validate (bot checks schema + permissions).
+# 6) Run /config apply to activate it. /config rollback to revert.
+# =========================
+
+version: 1
+
+guild:
+    id: "YOUR_GUILD_ID" # required
+
+admin:
+    # Only allow config commands inside this channel
+    controlChannelId: "ADMIN_CHANNEL_ID"
+
+    # Users who can run privileged bot commands (in addition to Discord permissions checks)
+    allowedUserIds: []
+    # Roles that can run privileged bot commands
+    allowedRoleIds: ["BOT_ADMIN_ROLE_ID"]
+
+    # Optional: require BOTH bot-allowed AND Discord permission
+    requireDiscordPermissions: true
+
+logging:
+    level: "info" # debug|info|warn|error
+    auditChannelId: "AUDIT_LOG_CHANNEL_ID" # optional: bot posts audit summaries here
+    redact:
+        - "token"
+        - "secrets"
+
+features:
+    subjects: true
+    moderation: true
+    qa: true
+    safeActions: true
+    archive: true
+
+subjects:
+    # When you create a subject (category), optionally create these default channels
+    defaultChannels:
+        - name: "announcements"
+          type: "text"
+          locked: true
+        - name: "discussion"
+          type: "text"
+          locked: false
+
+    # Archive behavior: "archive" moves channels to this category and locks it down
+    archiveCategoryId: "ARCHIVE_CATEGORY_ID"
+    archiveRenamePrefix: "archived-"
+
+moderation:
+    # Channels to ignore moderation in (e.g. staff-only)
+    excludedChannelIds: []
+
+    # Banned words/phrases (simple contains match)
+    bannedPhrases:
+        - "scam link"
+        - "free nitro"
+
+    links:
+        enabled: true
+        allowlistDomains:
+            - "discord.com"
+            - "github.com"
+        blockUnknownDomains: false
+
+    spam:
+        enabled: true
+        maxMessagesPerWindow: 6
+        windowSeconds: 10
+        action: "warn" # warn|delete|timeout|ban
+        timeoutSeconds: 600
+
+    strikes:
+        enabled: true
+        # escalating actions based on strike count
+        thresholds:
+            "1": { action: "warn" }
+            "2": { action: "delete" }
+            "3": { action: "timeout", timeoutSeconds: 1800 }
+            "5": { action: "ban", deleteMessageDays: 1 }
+
+qa:
+    # Q&A rules: first match wins by default
+    enabled: true
+    defaultMode: "contains" # contains|exact|regex
+    rules:
+        - trigger: "help"
+          mode: "contains"
+          response: "Try /subject create <name> or /config show in the admin channel."
+          channelIds: [] # empty => all channels except excluded
+          cooldownSeconds: 10
+
+        - trigger: "^ping$"
+          mode: "regex"
+          response: "pong"
+          channelIds: []
+          cooldownSeconds: 5
+
+safeActions:
+    # "Actions" are named workflows composed of whitelisted steps.
+    # This is the safe way to add more 'commands' without redeploying code.
+    actions:
+        onboarding:
+            description: "Create onboarding channels and post welcome message"
+            steps:
+                - op: "create_category"
+                  name: "Onboarding"
+                - op: "create_channel"
+                  category: "Onboarding"
+                  name: "start-here"
+                  type: "text"
+                - op: "send_message"
+                  channel: "start-here"
+                  content: "Welcome! Read the rules and introduce yourself."
+
+# End of config
