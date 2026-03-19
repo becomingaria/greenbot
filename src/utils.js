@@ -7,6 +7,12 @@ export function isAdminUser(interaction, config) {
         requireDiscordPermissions,
     } = config.admin || {}
 
+    const adminChannelId = config.admin?.controlChannelId
+    // If the command is in the configured admin channel, treat as admin-level access.
+    if (adminChannelId && interaction.channelId === adminChannelId) {
+        return true
+    }
+
     if (allowedUserIds.includes(interaction.user.id)) return true
 
     const member = interaction.member

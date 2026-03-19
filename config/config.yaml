@@ -21,10 +21,10 @@ admin:
     # Users who can run privileged bot commands (in addition to Discord permissions checks)
     allowedUserIds: []
     # Roles that can run privileged bot commands
-    allowedRoleIds: ["BOT_ADMIN_ROLE_ID"]
+    allowedRoleIds: []
 
     # Optional: require BOTH bot-allowed AND Discord permission
-    requireDiscordPermissions: true
+    requireDiscordPermissions: false
 
 logging:
     level: "info" # debug|info|warn|error
@@ -41,13 +41,41 @@ features:
     archive: true
 
 subjects:
-    # When you create a subject (category), optionally create these default channels
+    # When you create a subject (category), optionally create these default channels.
+    # You can use {subject} to interpolate the name given in /subject create.
     defaultChannels:
-        - name: "announcements"
+        - name: "{subject}-chat"
           type: "text"
-          locked: true
-        - name: "discussion"
+          locked: false
+        - name: "{subject}-resources"
           type: "text"
+          locked: false
+        - name: "{subject}-art"
+          type: "text"
+          locked: false
+        - name: "{subject}-planning"
+          type: "text"
+          locked: false
+        - name: "{subject}-rol"
+          type: "text"
+          locked: false
+        - name: "{subject}-i-am-home"
+          type: "text"
+          locked: false
+        - name: "{subject}-food"
+          type: "text"
+          locked: false
+        - name: "{subject}-memes"
+          type: "text"
+          locked: false
+        - name: "{subject}-post-game-qa"
+          type: "text"
+          locked: false
+        - name: "{subject} - VC"
+          type: "voice"
+          locked: false
+        - name: "{subject} - Breakout Room"
+          type: "voice"
           locked: false
 
     # Archive behavior: "archive" moves channels to this category and locks it down

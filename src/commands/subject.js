@@ -176,8 +176,11 @@ export async function execute(interaction, context) {
                       ? ChannelType.GuildForum
                       : ChannelType.GuildText
 
+            const channelName = def.name
+                .replace(/\{subject\}/gi, name)
+
             const channel = await guild.channels.create({
-                name: def.name,
+                name: channelName,
                 type: channelType,
                 parent: category,
             })
