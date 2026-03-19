@@ -94,10 +94,8 @@ export class GreenBotStack extends cdk.Stack {
         const userData = ec2.UserData.forLinux()
         userData.addCommands(
             "set -e",
-            // Node.js 20 via NodeSource (AL2023 default dnf gives Node 18)
-            "dnf install -y curl unzip",
-            "curl -fsSL https://rpm.nodesource.com/setup_20.x | bash -",
-            "dnf install -y nodejs",
+            // nodejs20 is in the AL2023 default repo — no extra setup needed
+            "dnf install -y nodejs20 unzip",
             "mkdir -p /opt/greenbot",
             // Download source bundle from CDK asset bucket
             `aws s3 cp s3://${codeAsset.s3BucketName}/${codeAsset.s3ObjectKey} /tmp/greenbot.zip`,
