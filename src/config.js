@@ -74,7 +74,7 @@ const configSchema = Joi.object({
                 }),
             )
             .default([]),
-        rolePrefix: Joi.string().default(""),
+        rolePrefix: Joi.string().allow("").default(""),
         createRoleOnSubject: Joi.boolean().default(true),
         archiveCategoryId: Joi.string().allow("").default(""),
         archiveRenamePrefix: Joi.string().default("archived-"),
