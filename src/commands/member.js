@@ -1,6 +1,6 @@
 import { SlashCommandBuilder } from "@discordjs/builders"
 import { auditLog } from "../audit.js"
-import { requireAdmin, ensureAdminChannel } from "../utils.js"
+
 import { StateStore } from "../state.js"
 
 const stateStore = new StateStore({
@@ -115,8 +115,6 @@ export async function execute(interaction, context) {
         return
     }
 
-    if (!ensureAdminChannel(interaction, config)) return
-    if (!requireAdmin(interaction, config)) return
 
     const guild = interaction.guild
     if (!guild) {

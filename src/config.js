@@ -15,8 +15,22 @@ const configSchema = Joi.object({
         controlChannelId: Joi.string().required(),
         allowedUserIds: Joi.array().items(Joi.string()).default([]),
         allowedRoleIds: Joi.array().items(Joi.string()).default([]),
+        allowedRoleNames: Joi.array().items(Joi.string()).default([]),
         requireDiscordPermissions: Joi.boolean().default(true),
     }).required(),
+    permissions: Joi.object({
+        defaultCommandRoleNames: Joi.array()
+            .items(Joi.string())
+            .default(["admin"]),
+        defaultCommandRoleIds: Joi.array().items(Joi.string()).default([]),
+        commandRoles: Joi.object().pattern(
+            Joi.string(),
+            Joi.object({
+                roleNames: Joi.array().items(Joi.string()).default([]),
+                roleIds: Joi.array().items(Joi.string()).default([]),
+            }),
+        ),
+    }).default(),
     logging: Joi.object({
         level: Joi.string()
             .valid("debug", "info", "warn", "error")

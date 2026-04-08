@@ -1,7 +1,7 @@
 import { SlashCommandBuilder } from "@discordjs/builders"
 import { runSafeAction } from "../actions.js"
 import { auditLog } from "../audit.js"
-import { requireAdmin, ensureAdminChannel } from "../utils.js"
+
 
 export const data = new SlashCommandBuilder()
     .setName("action")
@@ -32,16 +32,16 @@ export const data = new SlashCommandBuilder()
             )
             .addStringOption((opt) =>
                 opt
-                    .setName("description")
-                    .setDescription("Human-friendly description of the action"),
-            )
-            .addStringOption((opt) =>
-                opt
                     .setName("steps")
                     .setDescription(
                         'JSON or YAML array of steps (e.g. [{"op":"create_category",...}])',
                     )
                     .setRequired(true),
+            )
+            .addStringOption((opt) =>
+                opt
+                    .setName("description")
+                    .setDescription("Human-friendly description of the action"),
             ),
     )
 
@@ -57,8 +57,6 @@ export async function execute(interaction, context) {
         return
     }
 
-    if (!ensureAdminChannel(interaction, config)) return
-    if (!requireAdmin(interaction, config)) return
 
     const sub = interaction.options.getSubcommand()
     const actions = config.safeActions?.actions || {}

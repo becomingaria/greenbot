@@ -1,4 +1,5 @@
 import { SlashCommandBuilder } from "@discordjs/builders"
+
 import yaml from "yaml"
 import { StateStore } from "../state.js"
 
@@ -92,6 +93,7 @@ export async function execute(interaction, context) {
         })
         return
     }
+
 
     const guild = interaction.guild
     if (!guild) {

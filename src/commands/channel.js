@@ -1,7 +1,7 @@
 import { SlashCommandBuilder } from "@discordjs/builders"
 import { ChannelType, PermissionsBitField } from "discord.js"
 import { auditLog } from "../audit.js"
-import { requireAdmin, ensureAdminChannel } from "../utils.js"
+
 
 export const data = new SlashCommandBuilder()
     .setName("channel")
@@ -61,8 +61,6 @@ export async function execute(interaction, context) {
         return
     }
 
-    if (!ensureAdminChannel(interaction, config)) return
-    if (!requireAdmin(interaction, config)) return
 
     if (!config.features?.archive) {
         await interaction.reply({

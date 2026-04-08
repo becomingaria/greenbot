@@ -1,7 +1,5 @@
 import { SlashCommandBuilder } from "@discordjs/builders"
-import { PermissionsBitField } from "discord.js"
 import { auditLog } from "../audit.js"
-import { requireAdmin, ensureAdminChannel } from "../utils.js"
 
 export const data = new SlashCommandBuilder()
     .setName("mod")
@@ -109,34 +107,7 @@ export async function execute(interaction, context) {
         return
     }
 
-    if (!ensureAdminChannel(interaction, config)) return
-    if (!requireAdmin(interaction, config)) return
-
     const sub = interaction.options.getSubcommand()
-    const member = interaction.member
-    if (!member) {
-        await interaction.reply({
-            content: "Could not resolve your guild member.",
-            ephemeral: true,
-        })
-        return
-    }
-
-    const requiredPerms = {
-        ban: PermissionsBitField.Flags.BanMembers,
-        unban: PermissionsBitField.Flags.BanMembers,
-        role: PermissionsBitField.Flags.ManageRoles,
-        timeout: PermissionsBitField.Flags.ModerateMembers,
-    }
-
-    const required = requiredPerms[sub]
-    if (required && !member.permissions.has(required)) {
-        await interaction.reply({
-            content: "You do not have permission to perform this action.",
-            ephemeral: true,
-        })
-        return
-    }
 
     if (sub === "ban") {
         const user = interaction.options.getUser("user", true)

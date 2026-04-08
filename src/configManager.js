@@ -101,7 +101,7 @@ export class ConfigManager {
         return `${this.s3Prefix}/${guildId}/versions/${timestamp}.yaml`
     }
 
-    async getCurrentConfig() {
+    getCurrentConfig() {
         return this.defaultConfig
     }
 

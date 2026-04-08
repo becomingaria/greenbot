@@ -1,5 +1,4 @@
 import { SlashCommandBuilder } from "@discordjs/builders"
-import { PermissionsBitField } from "discord.js"
 import yaml from "yaml"
 import { auditLog } from "../audit.js"
 
@@ -44,32 +43,6 @@ export const data = new SlashCommandBuilder()
             ),
     )
 
-function isAuthorized(interaction, config) {
-    const {
-        allowedUserIds = [],
-        allowedRoleIds = [],
-        requireDiscordPermissions,
-    } = config.admin || {}
-    if (allowedUserIds.includes(interaction.user.id)) return true
-
-    const member = interaction.member
-    if (member && member.roles) {
-        const hasRole = allowedRoleIds.some((roleId) =>
-            member.roles.cache.has(roleId),
-        )
-        if (hasRole) return true
-    }
-
-    if (requireDiscordPermissions) {
-        const perms = PermissionsBitField.Flags.ManageGuild
-        if (!member || !member.permissions.has(perms)) {
-            return false
-        }
-    }
-
-    return false
-}
-
 async function findLatestAttachmentFromUser(interaction) {
     const channel = interaction.channel
     if (!channel || !channel.isTextBased()) return null
@@ -109,26 +82,6 @@ export async function execute(interaction, context) {
             ephemeral: true,
         })
         return
-    }
-
-    const adminChannelId = config.admin?.controlChannelId
-    if (sub !== "show") {
-        if (adminChannelId && interaction.channelId !== adminChannelId) {
-            await interaction.reply({
-                content:
-                    "This command can only be used in the configured admin channel.",
-                ephemeral: true,
-            })
-            return
-        }
-
-        if (!isAuthorized(interaction, config)) {
-            await interaction.reply({
-                content: "You are not authorized to run this command.",
-                ephemeral: true,
-            })
-            return
-        }
     }
 
     if (sub === "show") {
