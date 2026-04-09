@@ -1,4 +1,5 @@
 import { SlashCommandBuilder } from "@discordjs/builders"
+import { MessageFlags } from "discord.js"
 import { auditLog } from "../audit.js"
 
 import { StateStore } from "../state.js"
@@ -44,7 +45,7 @@ async function applyRolesByMapping(guild, mapping) {
         }
         if (!member) {
             member = guild.members.cache.find(
-                (m) => m.user.tag.toLowerCase() === userKey.toLowerCase(),
+                (m) => m.user.username.toLowerCase() === userKey.toLowerCase(),
             )
         }
         if (member) {
@@ -110,17 +111,16 @@ export async function execute(interaction, context) {
     if (!config) {
         await interaction.reply({
             content: "Config is not loaded yet.",
-            ephemeral: true,
+            flags: MessageFlags.Ephemeral,
         })
         return
     }
-
 
     const guild = interaction.guild
     if (!guild) {
         await interaction.reply({
             content: "This command must be used in a server.",
-            ephemeral: true,
+            flags: MessageFlags.Ephemeral,
         })
         return
     }
@@ -136,7 +136,7 @@ export async function execute(interaction, context) {
         if (!memberKey || !roles.length) {
             await interaction.reply({
                 content: "Invalid user or role list provided.",
-                ephemeral: true,
+                flags: MessageFlags.Ephemeral,
             })
             return
         }
@@ -145,7 +145,7 @@ export async function execute(interaction, context) {
         await applyRolesByMapping(guild, { [memberKey]: roles })
 
         await auditLog(config, interaction.client, {
-            actor: `${interaction.user.tag} (${interaction.user.id})`,
+            actor: `${interaction.user.username} (${interaction.user.id})`,
             action: "member.set",
             target: memberKey,
             detail: `roles=${roles.join(",")}`,
@@ -153,7 +153,7 @@ export async function execute(interaction, context) {
 
         await interaction.reply({
             content: `Set roles for ${memberKey}: ${roles.join(", ")}.`,
-            ephemeral: true,
+            flags: MessageFlags.Ephemeral,
         })
         return
     }
@@ -165,7 +165,7 @@ export async function execute(interaction, context) {
         if (!memberKey) {
             await interaction.reply({
                 content: "Invalid user provided.",
-                ephemeral: true,
+                flags: MessageFlags.Ephemeral,
             })
             return
         }
@@ -173,7 +173,7 @@ export async function execute(interaction, context) {
         await stateStore.deleteMemberRoles(guild.id, memberKey)
         await interaction.reply({
             content: `Removed role assignment for ${memberKey}.`,
-            ephemeral: true,
+            flags: MessageFlags.Ephemeral,
         })
         return
     }
@@ -183,7 +183,7 @@ export async function execute(interaction, context) {
         if (!entries.length) {
             await interaction.reply({
                 content: "No member role assignments stored.",
-                ephemeral: true,
+                flags: MessageFlags.Ephemeral,
             })
             return
         }
@@ -193,7 +193,7 @@ export async function execute(interaction, context) {
         )
         await interaction.reply({
             content: `Member assignments:\n${lines.join("\n")}`,
-            ephemeral: true,
+            flags: MessageFlags.Ephemeral,
         })
         return
     }
@@ -220,7 +220,7 @@ export async function execute(interaction, context) {
 
         await interaction.reply({
             content: `Processed ${Object.keys(parsed).length} member assignments.`,
-            ephemeral: true,
+            flags: MessageFlags.Ephemeral,
         })
         return
     }

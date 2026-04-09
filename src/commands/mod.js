@@ -1,4 +1,5 @@
 import { SlashCommandBuilder } from "@discordjs/builders"
+import { MessageFlags } from "discord.js"
 import { auditLog } from "../audit.js"
 
 export const data = new SlashCommandBuilder()
@@ -91,7 +92,7 @@ export const data = new SlashCommandBuilder()
 
 function formatReason(interaction, extra) {
     const user = interaction.user
-    return `${extra || ""} (by ${user.tag} / ${user.id})`.trim()
+    return `${extra || ""} (by ${user.username} / ${user.id})`.trim()
 }
 
 export async function execute(interaction, context) {
@@ -102,7 +103,7 @@ export async function execute(interaction, context) {
     if (!config || !guild) {
         await interaction.reply({
             content: "Missing config or guild context.",
-            ephemeral: true,
+            flags: MessageFlags.Ephemeral,
         })
         return
     }
@@ -124,15 +125,15 @@ export async function execute(interaction, context) {
             })
 
         await auditLog(config, interaction.client, {
-            actor: `${interaction.user.tag} (${interaction.user.id})`,
+            actor: `${interaction.user.username} (${interaction.user.id})`,
             action: "mod.ban",
-            target: `${user.tag} (${user.id})`,
+            target: `${user.username} (${user.id})`,
             detail: `deleteDays=${deleteDays}`,
         })
 
         await interaction.reply({
-            content: `Banned ${user.tag} (${user.id}).`,
-            ephemeral: true,
+            content: `Banned ${user.username} (${user.id}).`,
+            flags: MessageFlags.Ephemeral,
         })
         return
     }
@@ -149,7 +150,7 @@ export async function execute(interaction, context) {
         })
 
         await auditLog(config, interaction.client, {
-            actor: `${interaction.user.tag} (${interaction.user.id})`,
+            actor: `${interaction.user.username} (${interaction.user.id})`,
             action: "mod.unban",
             target: userId,
             detail: reason,
@@ -157,7 +158,7 @@ export async function execute(interaction, context) {
 
         await interaction.reply({
             content: `Unbanned user ${userId}.`,
-            ephemeral: true,
+            flags: MessageFlags.Ephemeral,
         })
         return
     }
@@ -177,7 +178,7 @@ export async function execute(interaction, context) {
         if (!memberToUpdate) {
             await interaction.reply({
                 content: "Could not find that member.",
-                ephemeral: true,
+                flags: MessageFlags.Ephemeral,
             })
             return
         }
@@ -188,15 +189,15 @@ export async function execute(interaction, context) {
             })
 
             await auditLog(config, interaction.client, {
-                actor: `${interaction.user.tag} (${interaction.user.id})`,
+                actor: `${interaction.user.username} (${interaction.user.id})`,
                 action: "mod.role.add",
-                target: `${user.tag} (${user.id})`,
+                target: `${user.username} (${user.id})`,
                 detail: `role=${role.name}`,
             })
 
             await interaction.reply({
-                content: `Added role ${role.name} to ${user.tag}.`,
-                ephemeral: true,
+                content: `Added role ${role.name} to ${user.username}.`,
+                flags: MessageFlags.Ephemeral,
             })
             return
         }
@@ -207,15 +208,15 @@ export async function execute(interaction, context) {
             })
 
             await auditLog(config, interaction.client, {
-                actor: `${interaction.user.tag} (${interaction.user.id})`,
+                actor: `${interaction.user.username} (${interaction.user.id})`,
                 action: "mod.role.remove",
-                target: `${user.tag} (${user.id})`,
+                target: `${user.username} (${user.id})`,
                 detail: `role=${role.name}`,
             })
 
             await interaction.reply({
-                content: `Removed role ${role.name} from ${user.tag}.`,
-                ephemeral: true,
+                content: `Removed role ${role.name} from ${user.username}.`,
+                flags: MessageFlags.Ephemeral,
             })
             return
         }
@@ -235,7 +236,7 @@ export async function execute(interaction, context) {
         if (!memberToTimeout) {
             await interaction.reply({
                 content: "Could not find that member.",
-                ephemeral: true,
+                flags: MessageFlags.Ephemeral,
             })
             return
         }
@@ -246,15 +247,15 @@ export async function execute(interaction, context) {
         })
 
         await auditLog(config, interaction.client, {
-            actor: `${interaction.user.tag} (${interaction.user.id})`,
+            actor: `${interaction.user.username} (${interaction.user.id})`,
             action: "mod.timeout",
-            target: `${user.tag} (${user.id})`,
+            target: `${user.username} (${user.id})`,
             detail: `seconds=${duration}`,
         })
 
         await interaction.reply({
-            content: `Timed out ${user.tag} for ${duration} seconds.`,
-            ephemeral: true,
+            content: `Timed out ${user.username} for ${duration} seconds.`,
+            flags: MessageFlags.Ephemeral,
         })
         return
     }

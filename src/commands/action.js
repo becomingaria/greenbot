@@ -1,7 +1,7 @@
 import { SlashCommandBuilder } from "@discordjs/builders"
+import { MessageFlags } from "discord.js"
 import { runSafeAction } from "../actions.js"
 import { auditLog } from "../audit.js"
-
 
 export const data = new SlashCommandBuilder()
     .setName("action")
@@ -52,11 +52,10 @@ export async function execute(interaction, context) {
     if (!config || !config.features?.safeActions) {
         await interaction.reply({
             content: "Safe actions are not enabled in config.",
-            ephemeral: true,
+            flags: MessageFlags.Ephemeral,
         })
         return
     }
-
 
     const sub = interaction.options.getSubcommand()
     const actions = config.safeActions?.actions || {}
@@ -66,7 +65,7 @@ export async function execute(interaction, context) {
         if (!names.length) {
             await interaction.reply({
                 content: "No safe actions are configured.",
-                ephemeral: true,
+                flags: MessageFlags.Ephemeral,
             })
             return
         }
@@ -77,7 +76,7 @@ export async function execute(interaction, context) {
         )
         await interaction.reply({
             content: `Available actions:\n${lines.join("\n")}`,
-            ephemeral: true,
+            flags: MessageFlags.Ephemeral,
         })
         return
     }
@@ -95,7 +94,7 @@ export async function execute(interaction, context) {
                 .join("\n")
 
             await auditLog(config, interaction.client, {
-                actor: `${interaction.user.tag} (${interaction.user.id})`,
+                actor: `${interaction.user.username} (${interaction.user.id})`,
                 action: "action.run",
                 target: name,
                 detail: `success=${ok}`,
@@ -103,12 +102,12 @@ export async function execute(interaction, context) {
 
             await interaction.reply({
                 content: `Action **${name}** completed (success=${ok}):\n${message}`,
-                ephemeral: true,
+                flags: MessageFlags.Ephemeral,
             })
         } catch (err) {
             await interaction.reply({
                 content: `Action failed: ${err.message}`,
-                ephemeral: true,
+                flags: MessageFlags.Ephemeral,
             })
         }
         return
@@ -131,7 +130,7 @@ export async function execute(interaction, context) {
                 await interaction.reply({
                     content:
                         "Failed to parse steps. Provide valid JSON or YAML representing an array of steps.",
-                    ephemeral: true,
+                    flags: MessageFlags.Ephemeral,
                 })
                 return
             }
@@ -140,7 +139,7 @@ export async function execute(interaction, context) {
         if (!Array.isArray(steps)) {
             await interaction.reply({
                 content: "Steps must be an array of operations.",
-                ephemeral: true,
+                flags: MessageFlags.Ephemeral,
             })
             return
         }
@@ -160,7 +159,7 @@ export async function execute(interaction, context) {
                 content: `Invalid step: ${JSON.stringify(invalid)}. Allowed ops: ${[
                     ...allowedOps,
                 ].join(", ")}`,
-                ephemeral: true,
+                flags: MessageFlags.Ephemeral,
             })
             return
         }
@@ -180,7 +179,7 @@ export async function execute(interaction, context) {
             }
 
             await auditLog(config, interaction.client, {
-                actor: `${interaction.user.tag} (${interaction.user.id})`,
+                actor: `${interaction.user.username} (${interaction.user.id})`,
                 action: "action.add",
                 target: name,
                 detail: description,
@@ -188,12 +187,12 @@ export async function execute(interaction, context) {
 
             await interaction.reply({
                 content: `Added safe action **${name}**. Run it with /action run ${name}`,
-                ephemeral: true,
+                flags: MessageFlags.Ephemeral,
             })
         } catch (err) {
             await interaction.reply({
                 content: `Failed to save action: ${err.message}`,
-                ephemeral: true,
+                flags: MessageFlags.Ephemeral,
             })
         }
 

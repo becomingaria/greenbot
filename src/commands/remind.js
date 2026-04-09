@@ -1,4 +1,5 @@
 import { SlashCommandBuilder } from "@discordjs/builders"
+import { MessageFlags } from "discord.js"
 
 import { StateStore } from "../state.js"
 import { parseReminderSchedule, computeNextReminderDue } from "../reminders.js"
@@ -137,7 +138,7 @@ export async function execute(interaction, context) {
     if (!config) {
         await interaction.reply({
             content: "Config is not loaded yet.",
-            ephemeral: true,
+            flags: MessageFlags.Ephemeral,
         })
         return
     }
@@ -146,7 +147,7 @@ export async function execute(interaction, context) {
         await interaction.reply({
             content:
                 "The reminders feature is not enabled in this server's configuration.",
-            ephemeral: true,
+            flags: MessageFlags.Ephemeral,
         })
         return
     }
@@ -155,11 +156,10 @@ export async function execute(interaction, context) {
     if (!guild) {
         await interaction.reply({
             content: "This command can only be used in a server.",
-            ephemeral: true,
+            flags: MessageFlags.Ephemeral,
         })
         return
     }
-
 
     const sub = interaction.options.getSubcommand()
 
@@ -173,7 +173,7 @@ export async function execute(interaction, context) {
             await interaction.reply({
                 content:
                     "Could not parse the time. Use a relative duration (e.g. 10m, 2h, 1d), an ISO timestamp in the future, or a cron-style expression.",
-                ephemeral: true,
+                flags: MessageFlags.Ephemeral,
             })
             return
         }
@@ -193,7 +193,7 @@ export async function execute(interaction, context) {
 
         await interaction.reply({
             content: `Reminder scheduled for **${formatAt(parsed.dueAt)}** in <#${targetChannelId}> (ID: ${reminderId}).${parsed.recurrence ? ` Recurs: ${parsed.recurrence}` : ""}`,
-            ephemeral: true,
+            flags: MessageFlags.Ephemeral,
         })
         return
     }
@@ -206,7 +206,7 @@ export async function execute(interaction, context) {
         if (!items || !items.length) {
             await interaction.reply({
                 content: "You have no upcoming reminders.",
-                ephemeral: true,
+                flags: MessageFlags.Ephemeral,
             })
             return
         }
@@ -224,7 +224,7 @@ export async function execute(interaction, context) {
 
         await interaction.reply({
             content: `Your reminders:\n${lines.join("\n")}${more}`,
-            ephemeral: true,
+            flags: MessageFlags.Ephemeral,
         })
         return
     }
@@ -236,7 +236,7 @@ export async function execute(interaction, context) {
             content: success
                 ? `Cancelled reminder ${id}.`
                 : `Could not find a reminder with ID ${id}.`,
-            ephemeral: true,
+            flags: MessageFlags.Ephemeral,
         })
         return
     }
@@ -249,7 +249,7 @@ export async function execute(interaction, context) {
         if (!existing) {
             await interaction.reply({
                 content: `Could not find a reminder with ID ${id}.`,
-                ephemeral: true,
+                flags: MessageFlags.Ephemeral,
             })
             return
         }
@@ -259,7 +259,7 @@ export async function execute(interaction, context) {
             await interaction.reply({
                 content:
                     "Could not parse the snooze duration. Use something like '10m', '2h', or '1d'.",
-                ephemeral: true,
+                flags: MessageFlags.Ephemeral,
             })
             return
         }
@@ -269,7 +269,7 @@ export async function execute(interaction, context) {
         if (offset <= 0) {
             await interaction.reply({
                 content: "Snooze duration must be in the future.",
-                ephemeral: true,
+                flags: MessageFlags.Ephemeral,
             })
             return
         }
@@ -287,7 +287,7 @@ export async function execute(interaction, context) {
             content: `Snoozed reminder ${id} by ${duration}. New time: ${formatAt(
                 newDue,
             )}`,
-            ephemeral: true,
+            flags: MessageFlags.Ephemeral,
         })
         return
     }
@@ -298,7 +298,7 @@ export async function execute(interaction, context) {
         if (!reminder) {
             await interaction.reply({
                 content: `Could not find a reminder with ID ${id}.`,
-                ephemeral: true,
+                flags: MessageFlags.Ephemeral,
             })
             return
         }
@@ -315,7 +315,7 @@ export async function execute(interaction, context) {
 
         await interaction.reply({
             content: lines.join("\n"),
-            ephemeral: true,
+            flags: MessageFlags.Ephemeral,
         })
         return
     }
@@ -326,7 +326,7 @@ export async function execute(interaction, context) {
         if (!existing) {
             await interaction.reply({
                 content: `Could not find a reminder with ID ${id}.`,
-                ephemeral: true,
+                flags: MessageFlags.Ephemeral,
             })
             return
         }
@@ -345,7 +345,7 @@ export async function execute(interaction, context) {
 
         await interaction.reply({
             content: `Cloned reminder ${id} to new reminder ${newId}.`,
-            ephemeral: true,
+            flags: MessageFlags.Ephemeral,
         })
         return
     }
@@ -360,7 +360,7 @@ export async function execute(interaction, context) {
         if (!existing) {
             await interaction.reply({
                 content: `Could not find a reminder with ID ${id}.`,
-                ephemeral: true,
+                flags: MessageFlags.Ephemeral,
             })
             return
         }
@@ -374,7 +374,7 @@ export async function execute(interaction, context) {
                 await interaction.reply({
                     content:
                         "Could not parse the new time. Use a relative duration (e.g. 10m, 2h, 1d), an ISO timestamp in the future, or a cron-style expression.",
-                    ephemeral: true,
+                    flags: MessageFlags.Ephemeral,
                 })
                 return
             }
@@ -388,7 +388,7 @@ export async function execute(interaction, context) {
                 await interaction.reply({
                     content:
                         "Could not parse the recurrence expression. Use cron, 'every Monday at 9am', or 'every 1h'.",
-                    ephemeral: true,
+                    flags: MessageFlags.Ephemeral,
                 })
                 return
             }
@@ -400,7 +400,7 @@ export async function execute(interaction, context) {
             await interaction.reply({
                 content:
                     "No changes provided. Specify --when, --message, or --recurrence.",
-                ephemeral: true,
+                flags: MessageFlags.Ephemeral,
             })
             return
         }
@@ -413,7 +413,7 @@ export async function execute(interaction, context) {
 
         await interaction.reply({
             content: `Updated reminder ${id}.`,
-            ephemeral: true,
+            flags: MessageFlags.Ephemeral,
         })
         return
     }

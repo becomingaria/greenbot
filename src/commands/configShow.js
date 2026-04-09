@@ -1,4 +1,5 @@
 import { SlashCommandBuilder } from "@discordjs/builders"
+import { MessageFlags } from "discord.js"
 import yaml from "yaml"
 import { auditLog } from "../audit.js"
 
@@ -79,7 +80,7 @@ export async function execute(interaction, context) {
     if (!config) {
         await interaction.reply({
             content: "Config is not loaded yet.",
-            ephemeral: true,
+            flags: MessageFlags.Ephemeral,
         })
         return
     }
@@ -94,7 +95,7 @@ export async function execute(interaction, context) {
             files: [
                 { attachment: Buffer.from(payload, "utf8"), name: fileName },
             ],
-            ephemeral: true,
+            flags: MessageFlags.Ephemeral,
         })
         return
     }
@@ -110,7 +111,7 @@ export async function execute(interaction, context) {
                     name: fileName,
                 },
             ],
-            ephemeral: true,
+            flags: MessageFlags.Ephemeral,
         })
         return
     }
@@ -121,7 +122,7 @@ export async function execute(interaction, context) {
             await interaction.reply({
                 content:
                     "No config attachment found in the last few messages. Upload a YAML/JSON file and try again.",
-                ephemeral: true,
+                flags: MessageFlags.Ephemeral,
             })
             return
         }
@@ -135,12 +136,12 @@ export async function execute(interaction, context) {
             await interaction.reply({
                 content:
                     "Config validated successfully. Run `/config apply` to apply it.",
-                ephemeral: true,
+                flags: MessageFlags.Ephemeral,
             })
         } catch (err) {
             await interaction.reply({
                 content: `Config validation failed: ${err.message}`,
-                ephemeral: true,
+                flags: MessageFlags.Ephemeral,
             })
         }
 
@@ -160,19 +161,19 @@ export async function execute(interaction, context) {
             }
 
             await auditLog(config, interaction.client, {
-                actor: `${interaction.user.tag} (${interaction.user.id})`,
+                actor: `${interaction.user.username} (${interaction.user.id})`,
                 action: "config.apply",
                 detail: `Applied config for guild ${config.guild.id}`,
             })
 
             await interaction.reply({
                 content: "Config applied successfully.",
-                ephemeral: true,
+                flags: MessageFlags.Ephemeral,
             })
         } catch (err) {
             await interaction.reply({
                 content: `Failed to apply config: ${err.message}`,
-                ephemeral: true,
+                flags: MessageFlags.Ephemeral,
             })
         }
 
@@ -184,7 +185,7 @@ export async function execute(interaction, context) {
             await interaction.reply({
                 content:
                     "Rollback is only supported when config is stored in S3.",
-                ephemeral: true,
+                flags: MessageFlags.Ephemeral,
             })
             return
         }
@@ -195,7 +196,7 @@ export async function execute(interaction, context) {
             if (!versions.length) {
                 await interaction.reply({
                     content: "No config versions found to rollback to.",
-                    ephemeral: true,
+                    flags: MessageFlags.Ephemeral,
                 })
                 return
             }
@@ -208,7 +209,7 @@ export async function execute(interaction, context) {
                 await interaction.reply({
                     content:
                         "Could not find that version. Provide a valid version key.",
-                    ephemeral: true,
+                    flags: MessageFlags.Ephemeral,
                 })
                 return
             }
@@ -223,19 +224,19 @@ export async function execute(interaction, context) {
             }
 
             await auditLog(config, interaction.client, {
-                actor: `${interaction.user.tag} (${interaction.user.id})`,
+                actor: `${interaction.user.username} (${interaction.user.id})`,
                 action: "config.rollback",
                 detail: `Rolled back to version ${target.key}`,
             })
 
             await interaction.reply({
                 content: `Rolled back to version ${target.key} successfully.`,
-                ephemeral: true,
+                flags: MessageFlags.Ephemeral,
             })
         } catch (err) {
             await interaction.reply({
                 content: `Rollback failed: ${err.message}`,
-                ephemeral: true,
+                flags: MessageFlags.Ephemeral,
             })
         }
 

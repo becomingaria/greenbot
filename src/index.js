@@ -1,4 +1,4 @@
-import { Client, GatewayIntentBits, Partials, Collection } from "discord.js"
+import { Client, GatewayIntentBits, MessageFlags, Partials, Collection } from "discord.js"
 import { REST } from "@discordjs/rest"
 import { Routes } from "discord-api-types/v10"
 import { SSMClient, GetParameterCommand } from "@aws-sdk/client-ssm"
@@ -81,7 +81,7 @@ async function main() {
     }
 
     client.once("ready", async () => {
-        console.log(`Logged in as ${client.user.tag}`)
+        console.log(`Logged in as ${client.user.username}`)
 
         // Register commands in the guild (fast update during development).
         if (!GUILD_ID) {
@@ -132,12 +132,12 @@ async function main() {
             if (interaction.replied || interaction.deferred) {
                 await interaction.followUp({
                     content: "There was an error executing that command.",
-                    ephemeral: true,
+                    flags: MessageFlags.Ephemeral,
                 })
             } else {
                 await interaction.reply({
                     content: "There was an error executing that command.",
-                    ephemeral: true,
+                    flags: MessageFlags.Ephemeral,
                 })
             }
         }
@@ -167,7 +167,7 @@ async function main() {
 
             const stateStore = client.stateStore
             const userId = member.user.id
-            const userTag = member.user.tag.toLowerCase()
+            const userTag = member.user.username.toLowerCase()
 
             const rolesFromId = await stateStore.getMemberRoles(
                 guild.id,

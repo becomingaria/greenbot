@@ -23,7 +23,9 @@ export async function runSafeAction(actionName, interaction, config) {
             }
             case "create_channel": {
                 const category = guild.channels.cache.find(
-                    (c) => c.type === ChannelType.GuildCategory && c.name === step.category,
+                    (c) =>
+                        c.type === ChannelType.GuildCategory &&
+                        c.name === step.category,
                 )
                 const channelType =
                     step.type === "voice"
@@ -93,7 +95,9 @@ export async function runSafeAction(actionName, interaction, config) {
             }
             case "delete_category": {
                 const category = guild.channels.cache.find(
-                    (c) => c.type === ChannelType.GuildCategory && c.name === step.name,
+                    (c) =>
+                        c.type === ChannelType.GuildCategory &&
+                        c.name === step.name,
                 )
                 if (!category) {
                     results.push({

@@ -1,5 +1,5 @@
 import { SlashCommandBuilder } from "@discordjs/builders"
-import { ChannelType, PermissionFlagsBits } from "discord.js"
+import { ChannelType, MessageFlags, PermissionFlagsBits } from "discord.js"
 import { auditLog } from "../audit.js"
 
 export const data = new SlashCommandBuilder()
@@ -75,12 +75,13 @@ async function findCategory(guild, identifier) {
     const id = identifier.replace(/[^0-9]/g, "")
     if (id) {
         const byId = guild.channels.cache.get(id)
-        if (byId && byId.isCategory()) return byId
+        if (byId && byId.type === ChannelType.GuildCategory) return byId
     }
 
     return guild.channels.cache.find(
         (c) =>
-            c.isCategory() && c.name.toLowerCase() === identifier.toLowerCase(),
+            c.type === ChannelType.GuildCategory &&
+            c.name.toLowerCase() === identifier.toLowerCase(),
     )
 }
 
@@ -106,7 +107,10 @@ async function setChannelPermissions(channel, role) {
 
     if (channel.type === ChannelType.GuildVoice) {
         roleAllow.push(PermissionFlagsBits.Connect, PermissionFlagsBits.Speak)
-        everyoneDeny.push(PermissionFlagsBits.Connect, PermissionFlagsBits.Speak)
+        everyoneDeny.push(
+            PermissionFlagsBits.Connect,
+            PermissionFlagsBits.Speak,
+        )
     } else if (channel.type === ChannelType.GuildText) {
         roleAllow.push(
             PermissionFlagsBits.SendMessages,
@@ -137,7 +141,7 @@ export async function execute(interaction, context) {
     if (!config || !guild) {
         await interaction.reply({
             content: "Missing config or guild context.",
-            ephemeral: true,
+            flags: MessageFlags.Ephemeral,
         })
         return
     }
@@ -145,7 +149,7 @@ export async function execute(interaction, context) {
     if (!config.features?.subjects) {
         await interaction.reply({
             content: "Subjects are not enabled in config.",
-            ephemeral: true,
+            flags: MessageFlags.Ephemeral,
         })
         return
     }
@@ -160,7 +164,7 @@ export async function execute(interaction, context) {
         if (existing) {
             await interaction.reply({
                 content: `Category "${name}" already exists.`,
-                ephemeral: true,
+                flags: MessageFlags.Ephemeral,
             })
             return
         }
@@ -205,7 +209,7 @@ export async function execute(interaction, context) {
         }
 
         await auditLog(config, interaction.client, {
-            actor: `${interaction.user.tag} (${interaction.user.id})`,
+            actor: `${interaction.user.username} (${interaction.user.id})`,
             action: "subject.create",
             target: name,
             detail: `created ${created.length} default channels + role ${role.name}`,
@@ -215,7 +219,7 @@ export async function execute(interaction, context) {
             content: `Created subject category **${name}** + role **${role.name}** with default channels: ${
                 created.length ? created.join(", ") : "(none)"
             }`,
-            ephemeral: true,
+            flags: MessageFlags.Ephemeral,
         })
         return
     }
@@ -226,7 +230,7 @@ export async function execute(interaction, context) {
         if (!category) {
             await interaction.reply({
                 content: `Could not find subject category '${subject}'.`,
-                ephemeral: true,
+                flags: MessageFlags.Ephemeral,
             })
             return
         }
@@ -238,7 +242,7 @@ export async function execute(interaction, context) {
         if (!role) {
             await interaction.reply({
                 content: `No role found for subject '${category.name}' (expected '${roleName}').`,
-                ephemeral: true,
+                flags: MessageFlags.Ephemeral,
             })
             return
         }
@@ -247,7 +251,7 @@ export async function execute(interaction, context) {
         if (!member) {
             await interaction.reply({
                 content: "Could not resolve member.",
-                ephemeral: true,
+                flags: MessageFlags.Ephemeral,
             })
             return
         }
@@ -255,7 +259,7 @@ export async function execute(interaction, context) {
         await member.roles.add(role)
 
         await auditLog(config, interaction.client, {
-            actor: `${interaction.user.tag} (${interaction.user.id})`,
+            actor: `${interaction.user.username} (${interaction.user.id})`,
             action: "subject.join",
             target: `${category.name}`,
             detail: `member added role ${role.name}`,
@@ -263,7 +267,7 @@ export async function execute(interaction, context) {
 
         await interaction.reply({
             content: `You have been added to **${role.name}** and can now access subject **${category.name}**.`,
-            ephemeral: true,
+            flags: MessageFlags.Ephemeral,
         })
         return
     }
@@ -274,7 +278,7 @@ export async function execute(interaction, context) {
         if (!category) {
             await interaction.reply({
                 content: `No subject category found matching '${name}'.`,
-                ephemeral: true,
+                flags: MessageFlags.Ephemeral,
             })
             return
         }
@@ -298,7 +302,7 @@ export async function execute(interaction, context) {
         if (role) await role.delete()
 
         await auditLog(config, interaction.client, {
-            actor: `${interaction.user.tag} (${interaction.user.id})`,
+            actor: `${interaction.user.username} (${interaction.user.id})`,
             action: "subject.delete",
             target: name,
             detail: `deleted ${deletedChannels.length} channels + role ${role?.name ?? "(none)"}`,
@@ -308,7 +312,7 @@ export async function execute(interaction, context) {
             content: `Deleted subject **${name}**: removed ${deletedChannels.length} channel(s)${
                 role ? ` and role **${role.name}**` : ""
             }.`,
-            ephemeral: true,
+            flags: MessageFlags.Ephemeral,
         })
         return
     }
@@ -322,7 +326,7 @@ export async function execute(interaction, context) {
         if (!category) {
             await interaction.reply({
                 content: `Could not find subject category '${subject}'.`,
-                ephemeral: true,
+                flags: MessageFlags.Ephemeral,
             })
             return
         }
@@ -340,7 +344,7 @@ export async function execute(interaction, context) {
         })
 
         await auditLog(config, interaction.client, {
-            actor: `${interaction.user.tag} (${interaction.user.id})`,
+            actor: `${interaction.user.username} (${interaction.user.id})`,
             action: "subject.channels.add",
             target: channel.id,
             detail: `subject=${category.name}`,
@@ -348,7 +352,7 @@ export async function execute(interaction, context) {
 
         await interaction.reply({
             content: `Created channel <#${channel.id}> under **${category.name}**.`,
-            ephemeral: true,
+            flags: MessageFlags.Ephemeral,
         })
         return
     }

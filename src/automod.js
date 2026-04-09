@@ -137,7 +137,7 @@ async function performAction(message, action, modCfg, config, actions, reason) {
                 }${reasonText ? ` for reason: ${reasonText}` : ""}`,
             )
             await auditLog(config, message.client, {
-                actor: `${user.tag} (${user.id})`,
+                actor: `${user.username} (${user.id})`,
                 action: `automod.dryRun.${name}`,
                 target: `${guild?.id ?? "unknown"}:${channel?.id ?? "unknown"}`,
                 detail: reasonText,

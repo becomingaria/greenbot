@@ -1,7 +1,6 @@
 import { SlashCommandBuilder } from "@discordjs/builders"
-import { ChannelType, PermissionsBitField } from "discord.js"
+import { ChannelType, MessageFlags, PermissionFlagsBits } from "discord.js"
 import { auditLog } from "../audit.js"
-
 
 export const data = new SlashCommandBuilder()
     .setName("channel")
@@ -56,16 +55,15 @@ export async function execute(interaction, context) {
     if (!config || !guild) {
         await interaction.reply({
             content: "Missing config or guild context.",
-            ephemeral: true,
+            flags: MessageFlags.Ephemeral,
         })
         return
     }
 
-
     if (!config.features?.archive) {
         await interaction.reply({
             content: "Archive features are not enabled in config.",
-            ephemeral: true,
+            flags: MessageFlags.Ephemeral,
         })
         return
     }
@@ -75,7 +73,7 @@ export async function execute(interaction, context) {
         await interaction.reply({
             content:
                 "No archive category configured (subjects.archiveCategoryId). Please set it in config.",
-            ephemeral: true,
+            flags: MessageFlags.Ephemeral,
         })
         return
     }
@@ -84,7 +82,7 @@ export async function execute(interaction, context) {
     if (!target) {
         await interaction.reply({
             content: "Channel not found.",
-            ephemeral: true,
+            flags: MessageFlags.Ephemeral,
         })
         return
     }
@@ -100,7 +98,7 @@ export async function execute(interaction, context) {
             await interaction.reply({
                 content:
                     "Archive category not found or is not a category. Check subjects.archiveCategoryId.",
-                ephemeral: true,
+                flags: MessageFlags.Ephemeral,
             })
             return
         }
@@ -118,7 +116,7 @@ export async function execute(interaction, context) {
         await target.setName(newName).catch(() => null)
 
         await auditLog(config, interaction.client, {
-            actor: `${interaction.user.tag} (${interaction.user.id})`,
+            actor: `${interaction.user.username} (${interaction.user.id})`,
             action: "channel.archive",
             target: target.id,
             detail: `reason=${reason}`,
@@ -126,7 +124,7 @@ export async function execute(interaction, context) {
 
         await interaction.reply({
             content: `Archived channel <#${target.id}> (reason: ${reason || "none"}).`,
-            ephemeral: true,
+            flags: MessageFlags.Ephemeral,
         })
         return
     }
@@ -139,7 +137,7 @@ export async function execute(interaction, context) {
             await interaction.reply({
                 content:
                     "Please confirm deletion by setting `confirm` to true. This action is irreversible.",
-                ephemeral: true,
+                flags: MessageFlags.Ephemeral,
             })
             return
         }
@@ -149,7 +147,7 @@ export async function execute(interaction, context) {
         })
 
         await auditLog(config, interaction.client, {
-            actor: `${interaction.user.tag} (${interaction.user.id})`,
+            actor: `${interaction.user.username} (${interaction.user.id})`,
             action: "channel.delete",
             target: target.id,
             detail: `reason=${reason}`,
@@ -157,7 +155,7 @@ export async function execute(interaction, context) {
 
         await interaction.reply({
             content: `Deleted channel ${target.name} (reason: ${reason || "none"}).`,
-            ephemeral: true,
+            flags: MessageFlags.Ephemeral,
         })
         return
     }

@@ -1,4 +1,5 @@
 import { SlashCommandBuilder } from "@discordjs/builders"
+import { MessageFlags } from "discord.js"
 
 import yaml from "yaml"
 import { StateStore } from "../state.js"
@@ -80,7 +81,7 @@ export async function execute(interaction, context) {
     if (!config) {
         await interaction.reply({
             content: "Config is not loaded yet.",
-            ephemeral: true,
+            flags: MessageFlags.Ephemeral,
         })
         return
     }
@@ -89,17 +90,16 @@ export async function execute(interaction, context) {
         await interaction.reply({
             content:
                 "The remember feature is not enabled in this server's configuration.",
-            ephemeral: true,
+            flags: MessageFlags.Ephemeral,
         })
         return
     }
-
 
     const guild = interaction.guild
     if (!guild) {
         await interaction.reply({
             content: "This command can only be used in a server.",
-            ephemeral: true,
+            flags: MessageFlags.Ephemeral,
         })
         return
     }
@@ -115,7 +115,7 @@ export async function execute(interaction, context) {
         await stateStore.setRemember(guild.id, key, value, ttlSeconds)
         await interaction.reply({
             content: `Remembered **${key}** for ${forgetDays} days.`,
-            ephemeral: true,
+            flags: MessageFlags.Ephemeral,
         })
         return
     }
@@ -126,7 +126,7 @@ export async function execute(interaction, context) {
         if (!item) {
             await interaction.reply({
                 content: `No remembered value found for **${key}**.`,
-                ephemeral: true,
+                flags: MessageFlags.Ephemeral,
             })
             return
         }
@@ -136,7 +136,7 @@ export async function execute(interaction, context) {
         await interaction.reply({
             content: `**${key}** = ${item.value}
 Expires in ${formatDuration(expiresIn)} (accessing extends the lifetime).`,
-            ephemeral: true,
+            flags: MessageFlags.Ephemeral,
         })
         return
     }
@@ -148,7 +148,7 @@ Expires in ${formatDuration(expiresIn)} (accessing extends the lifetime).`,
             content: removed
                 ? `Forgot **${key}**.`
                 : `No remembered value found for **${key}**.`,
-            ephemeral: true,
+            flags: MessageFlags.Ephemeral,
         })
         return
     }
@@ -158,7 +158,7 @@ Expires in ${formatDuration(expiresIn)} (accessing extends the lifetime).`,
         if (!items || !items.length) {
             await interaction.reply({
                 content: "No remembered keys found.",
-                ephemeral: true,
+                flags: MessageFlags.Ephemeral,
             })
             return
         }
@@ -177,7 +177,7 @@ Expires in ${formatDuration(expiresIn)} (accessing extends the lifetime).`,
 
         await interaction.reply({
             content: `Remembered keys:\n${lines.join("\n")}${more}`,
-            ephemeral: true,
+            flags: MessageFlags.Ephemeral,
         })
         return
     }
@@ -187,7 +187,7 @@ Expires in ${formatDuration(expiresIn)} (accessing extends the lifetime).`,
         if (!items || !items.length) {
             await interaction.reply({
                 content: "No remembered keys found.",
-                ephemeral: true,
+                flags: MessageFlags.Ephemeral,
             })
             return
         }
@@ -213,7 +213,7 @@ Expires in ${formatDuration(expiresIn)} (accessing extends the lifetime).`,
                     name: fileName,
                 },
             ],
-            ephemeral: true,
+            flags: MessageFlags.Ephemeral,
         })
         return
     }

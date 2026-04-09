@@ -1,4 +1,5 @@
 import { SlashCommandBuilder } from "@discordjs/builders"
+import { MessageFlags } from "discord.js"
 
 export const data = new SlashCommandBuilder()
     .setName("ping")
@@ -6,11 +7,11 @@ export const data = new SlashCommandBuilder()
 
 export async function execute(interaction) {
     if (!interaction.isChatInputCommand()) return
-    const sent = await interaction.reply({
+    const { resource } = await interaction.reply({
         content: "Pong!",
-        fetchReply: true,
-        ephemeral: true,
+        withResponse: true,
+        flags: MessageFlags.Ephemeral,
     })
-    const latency = sent.createdTimestamp - interaction.createdTimestamp
+    const latency = resource.message.createdTimestamp - interaction.createdTimestamp
     await interaction.editReply(`Pong! ${latency}ms`)
 }
