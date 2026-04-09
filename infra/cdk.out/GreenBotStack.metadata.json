@@ -1,8 +1,32 @@
 {
-  "/GreenBotStack/LoadBalancerDNS": [
+  "/GreenBotStack/SsmParameterValue:--aws--service--ami-amazon-linux-latest--al2023-ami-kernel-6.1-arm64:C96584B6-F00A-464E-AD19-53AFF4B05118.Parameter": [
     {
       "type": "aws:cdk:logicalId",
-      "data": "LoadBalancerDNS"
+      "data": "SsmParameterValueawsserviceamiamazonlinuxlatestal2023amikernel61arm64C96584B6F00A464EAD1953AFF4B05118Parameter"
+    }
+  ],
+  "/GreenBotStack/StopSchedule": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "StopSchedule"
+    }
+  ],
+  "/GreenBotStack/StartSchedule": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "StartSchedule"
+    }
+  ],
+  "/GreenBotStack/MonthlyBudget": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "MonthlyBudget"
+    }
+  ],
+  "/GreenBotStack/InstanceId": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "InstanceId"
     }
   ],
   "/GreenBotStack/ConfigBucket": [
@@ -41,30 +65,6 @@
       "data": "DiscordTokenParam1317C241"
     }
   ],
-  "/GreenBotStack/GreenBotVpc/Resource": [
-    {
-      "type": "aws:cdk:logicalId",
-      "data": "GreenBotVpcE322C195"
-    }
-  ],
-  "/GreenBotStack/GreenBotVpc/IGW": [
-    {
-      "type": "aws:cdk:logicalId",
-      "data": "GreenBotVpcIGWD3967159"
-    }
-  ],
-  "/GreenBotStack/GreenBotVpc/VPCGW": [
-    {
-      "type": "aws:cdk:logicalId",
-      "data": "GreenBotVpcVPCGW6992CEEB"
-    }
-  ],
-  "/GreenBotStack/GreenBotCluster/Resource": [
-    {
-      "type": "aws:cdk:logicalId",
-      "data": "GreenBotCluster46B663AE"
-    }
-  ],
   "/GreenBotStack/GreenBotConfigBucket/Resource": [
     {
       "type": "aws:cdk:logicalId",
@@ -77,66 +77,34 @@
       "data": "GreenBotStateTable0F2194D0"
     }
   ],
-  "/GreenBotStack/GreenBotTaskRole/Resource": [
+  "/GreenBotStack/GreenBotInstanceRole/Resource": [
     {
       "type": "aws:cdk:logicalId",
-      "data": "GreenBotTaskRole25121C86"
+      "data": "GreenBotInstanceRoleD7331226"
     }
   ],
-  "/GreenBotStack/GreenBotExecutionRole/Resource": [
+  "/GreenBotStack/GreenBotSG/Resource": [
     {
       "type": "aws:cdk:logicalId",
-      "data": "GreenBotExecutionRole74E99CFA"
+      "data": "GreenBotSGD840EEE9"
     }
   ],
-  "/GreenBotStack/GreenBotService/LoadBalancerDNS": [
+  "/GreenBotStack/GreenBotInstance/InstanceProfile": [
     {
       "type": "aws:cdk:logicalId",
-      "data": "GreenBotServiceLoadBalancerDNS43B87015"
+      "data": "GreenBotInstanceInstanceProfile21837BD8"
     }
   ],
-  "/GreenBotStack/GreenBotService/ServiceURL": [
+  "/GreenBotStack/GreenBotInstance/Resource": [
     {
       "type": "aws:cdk:logicalId",
-      "data": "GreenBotServiceServiceURL56CA3A7F"
+      "data": "GreenBotInstance64E7DE54ad7f299dfb67f30e"
     }
   ],
-  "/GreenBotStack/GreenBotService/Service": [
+  "/GreenBotStack/SchedulerRole/Resource": [
     {
-      "type": "aws:cdk:warning",
-      "data": "minHealthyPercent has not been configured so the default value of 50% is used. The number of running tasks will decrease below the desired count during deployments etc. See https://github.com/aws/aws-cdk/issues/31705 [ack: @aws-cdk/aws-ecs:minHealthyPercent]",
-      "trace": [
-        "Annotations.addMessage (/Users/zakariahomara-mezzano/snapDragons/projects/active/greenbot/infra/node_modules/aws-cdk-lib/core/lib/annotations.js:1:2066)",
-        "Annotations.addWarningV2 (/Users/zakariahomara-mezzano/snapDragons/projects/active/greenbot/infra/node_modules/aws-cdk-lib/core/lib/annotations.js:1:984)",
-        "new BaseService2 (/Users/zakariahomara-mezzano/snapDragons/projects/active/greenbot/infra/node_modules/aws-cdk-lib/aws-ecs/lib/base/base-service.js:1:12364)",
-        "new FargateService2 (/Users/zakariahomara-mezzano/snapDragons/projects/active/greenbot/infra/node_modules/aws-cdk-lib/aws-ecs/lib/fargate/fargate-service.js:1:6371)",
-        "new FargateService2 (/Users/zakariahomara-mezzano/snapDragons/projects/active/greenbot/infra/node_modules/aws-cdk-lib/core/lib/prop-injectable.js:1:681)",
-        "new ApplicationLoadBalancedFargateService2 (/Users/zakariahomara-mezzano/snapDragons/projects/active/greenbot/infra/node_modules/aws-cdk-lib/aws-ecs-patterns/lib/fargate/application-load-balanced-fargate-service.js:1:6099)",
-        "new ApplicationLoadBalancedFargateService2 (/Users/zakariahomara-mezzano/snapDragons/projects/active/greenbot/infra/node_modules/aws-cdk-lib/core/lib/prop-injectable.js:1:681)",
-        "new GreenBotStack (/Users/zakariahomara-mezzano/snapDragons/projects/active/greenbot/infra/lib/greenbot-stack.ts:86:13)",
-        "Object.<anonymous> (/Users/zakariahomara-mezzano/snapDragons/projects/active/greenbot/infra/bin/greenbot-infra.ts:7:1)",
-        "Module._compile (node:internal/modules/cjs/loader:1706:14)",
-        "Module.m._compile (/Users/zakariahomara-mezzano/.npm/_npx/1bf7c3c15bf47d04/node_modules/ts-node/src/index.ts:1618:23)",
-        "node:internal/modules/cjs/loader:1839:10",
-        "Object.require.extensions.<computed> [as .ts] (/Users/zakariahomara-mezzano/.npm/_npx/1bf7c3c15bf47d04/node_modules/ts-node/src/index.ts:1621:12)",
-        "Module.load (node:internal/modules/cjs/loader:1441:32)",
-        "Function._load (node:internal/modules/cjs/loader:1263:12)",
-        "TracingChannel.traceSync (node:diagnostics_channel:322:14)",
-        "wrapModuleLoad (node:internal/modules/cjs/loader:237:24)",
-        "Function.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:171:5)",
-        "phase4 (/Users/zakariahomara-mezzano/.npm/_npx/1bf7c3c15bf47d04/node_modules/ts-node/src/bin.ts:649:14)",
-        "bootstrap (/Users/zakariahomara-mezzano/.npm/_npx/1bf7c3c15bf47d04/node_modules/ts-node/src/bin.ts:95:10)",
-        "main (/Users/zakariahomara-mezzano/.npm/_npx/1bf7c3c15bf47d04/node_modules/ts-node/src/bin.ts:55:10)",
-        "Object.<anonymous> (/Users/zakariahomara-mezzano/.npm/_npx/1bf7c3c15bf47d04/node_modules/ts-node/src/bin.ts:800:3)",
-        "Module._compile (node:internal/modules/cjs/loader:1706:14)",
-        "Object.<anonymous> (node:internal/modules/cjs/loader:1839:10)",
-        "Module.load (node:internal/modules/cjs/loader:1441:32)",
-        "Function._load (node:internal/modules/cjs/loader:1263:12)",
-        "TracingChannel.traceSync (node:diagnostics_channel:322:14)",
-        "wrapModuleLoad (node:internal/modules/cjs/loader:237:24)",
-        "Function.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:171:5)",
-        "node:internal/main/run_main_module:36:49"
-      ]
+      "type": "aws:cdk:logicalId",
+      "data": "SchedulerRole59E73443"
     }
   ],
   "/GreenBotStack/CDKMetadata/Default": [
@@ -145,202 +113,16 @@
       "data": "CDKMetadata"
     }
   ],
-  "/GreenBotStack/CDKMetadata/Condition": [
+  "/GreenBotStack/GreenBotInstanceRole/DefaultPolicy/Resource": [
     {
       "type": "aws:cdk:logicalId",
-      "data": "CDKMetadataAvailable"
+      "data": "GreenBotInstanceRoleDefaultPolicy2629E1D9"
     }
   ],
-  "/GreenBotStack/GreenBotVpc/PublicSubnet1/Subnet": [
+  "/GreenBotStack/SchedulerRole/DefaultPolicy/Resource": [
     {
       "type": "aws:cdk:logicalId",
-      "data": "GreenBotVpcPublicSubnet1Subnet29971BB9"
-    }
-  ],
-  "/GreenBotStack/GreenBotVpc/PublicSubnet1/RouteTable": [
-    {
-      "type": "aws:cdk:logicalId",
-      "data": "GreenBotVpcPublicSubnet1RouteTableDCC6DE59"
-    }
-  ],
-  "/GreenBotStack/GreenBotVpc/PublicSubnet1/RouteTableAssociation": [
-    {
-      "type": "aws:cdk:logicalId",
-      "data": "GreenBotVpcPublicSubnet1RouteTableAssociationFE7E9974"
-    }
-  ],
-  "/GreenBotStack/GreenBotVpc/PublicSubnet1/DefaultRoute": [
-    {
-      "type": "aws:cdk:logicalId",
-      "data": "GreenBotVpcPublicSubnet1DefaultRoute3D957CBC"
-    }
-  ],
-  "/GreenBotStack/GreenBotVpc/PublicSubnet1/EIP": [
-    {
-      "type": "aws:cdk:logicalId",
-      "data": "GreenBotVpcPublicSubnet1EIPFDE8421B"
-    }
-  ],
-  "/GreenBotStack/GreenBotVpc/PublicSubnet1/NATGateway": [
-    {
-      "type": "aws:cdk:logicalId",
-      "data": "GreenBotVpcPublicSubnet1NATGateway6F15F494"
-    }
-  ],
-  "/GreenBotStack/GreenBotVpc/PublicSubnet2/Subnet": [
-    {
-      "type": "aws:cdk:logicalId",
-      "data": "GreenBotVpcPublicSubnet2SubnetE8F803C6"
-    }
-  ],
-  "/GreenBotStack/GreenBotVpc/PublicSubnet2/RouteTable": [
-    {
-      "type": "aws:cdk:logicalId",
-      "data": "GreenBotVpcPublicSubnet2RouteTable93F89904"
-    }
-  ],
-  "/GreenBotStack/GreenBotVpc/PublicSubnet2/RouteTableAssociation": [
-    {
-      "type": "aws:cdk:logicalId",
-      "data": "GreenBotVpcPublicSubnet2RouteTableAssociationD63CE525"
-    }
-  ],
-  "/GreenBotStack/GreenBotVpc/PublicSubnet2/DefaultRoute": [
-    {
-      "type": "aws:cdk:logicalId",
-      "data": "GreenBotVpcPublicSubnet2DefaultRouteD00EF6DD"
-    }
-  ],
-  "/GreenBotStack/GreenBotVpc/PublicSubnet2/EIP": [
-    {
-      "type": "aws:cdk:logicalId",
-      "data": "GreenBotVpcPublicSubnet2EIP64E99E80"
-    }
-  ],
-  "/GreenBotStack/GreenBotVpc/PublicSubnet2/NATGateway": [
-    {
-      "type": "aws:cdk:logicalId",
-      "data": "GreenBotVpcPublicSubnet2NATGateway9794F4A8"
-    }
-  ],
-  "/GreenBotStack/GreenBotVpc/PrivateSubnet1/Subnet": [
-    {
-      "type": "aws:cdk:logicalId",
-      "data": "GreenBotVpcPrivateSubnet1SubnetBC367C9C"
-    }
-  ],
-  "/GreenBotStack/GreenBotVpc/PrivateSubnet1/RouteTable": [
-    {
-      "type": "aws:cdk:logicalId",
-      "data": "GreenBotVpcPrivateSubnet1RouteTableA79D2E05"
-    }
-  ],
-  "/GreenBotStack/GreenBotVpc/PrivateSubnet1/RouteTableAssociation": [
-    {
-      "type": "aws:cdk:logicalId",
-      "data": "GreenBotVpcPrivateSubnet1RouteTableAssociation6E457548"
-    }
-  ],
-  "/GreenBotStack/GreenBotVpc/PrivateSubnet1/DefaultRoute": [
-    {
-      "type": "aws:cdk:logicalId",
-      "data": "GreenBotVpcPrivateSubnet1DefaultRouteBA86F3CE"
-    }
-  ],
-  "/GreenBotStack/GreenBotVpc/PrivateSubnet2/Subnet": [
-    {
-      "type": "aws:cdk:logicalId",
-      "data": "GreenBotVpcPrivateSubnet2Subnet032E5F13"
-    }
-  ],
-  "/GreenBotStack/GreenBotVpc/PrivateSubnet2/RouteTable": [
-    {
-      "type": "aws:cdk:logicalId",
-      "data": "GreenBotVpcPrivateSubnet2RouteTable54094DAC"
-    }
-  ],
-  "/GreenBotStack/GreenBotVpc/PrivateSubnet2/RouteTableAssociation": [
-    {
-      "type": "aws:cdk:logicalId",
-      "data": "GreenBotVpcPrivateSubnet2RouteTableAssociation5CD91EE5"
-    }
-  ],
-  "/GreenBotStack/GreenBotVpc/PrivateSubnet2/DefaultRoute": [
-    {
-      "type": "aws:cdk:logicalId",
-      "data": "GreenBotVpcPrivateSubnet2DefaultRoute466E8887"
-    }
-  ],
-  "/GreenBotStack/GreenBotTaskRole/DefaultPolicy/Resource": [
-    {
-      "type": "aws:cdk:logicalId",
-      "data": "GreenBotTaskRoleDefaultPolicy6E9C30B1"
-    }
-  ],
-  "/GreenBotStack/GreenBotExecutionRole/DefaultPolicy/Resource": [
-    {
-      "type": "aws:cdk:logicalId",
-      "data": "GreenBotExecutionRoleDefaultPolicy84CEB20B"
-    }
-  ],
-  "/GreenBotStack/GreenBotService/LB/Resource": [
-    {
-      "type": "aws:cdk:logicalId",
-      "data": "GreenBotServiceLB528E0A79"
-    }
-  ],
-  "/GreenBotStack/GreenBotService/TaskDef/Resource": [
-    {
-      "type": "aws:cdk:logicalId",
-      "data": "GreenBotServiceTaskDef59F8BE18"
-    }
-  ],
-  "/GreenBotStack/GreenBotService/Service/Service": [
-    {
-      "type": "aws:cdk:logicalId",
-      "data": "GreenBotService795063EC"
-    }
-  ],
-  "/GreenBotStack/GreenBotService/LB/SecurityGroup/Resource": [
-    {
-      "type": "aws:cdk:logicalId",
-      "data": "GreenBotServiceLBSecurityGroupEF6B1D9D"
-    }
-  ],
-  "/GreenBotStack/GreenBotService/LB/SecurityGroup/to GreenBotStackGreenBotServiceSecurityGroup5D181DD4:80": [
-    {
-      "type": "aws:cdk:logicalId",
-      "data": "GreenBotServiceLBSecurityGrouptoGreenBotStackGreenBotServiceSecurityGroup5D181DD480D0730BD9"
-    }
-  ],
-  "/GreenBotStack/GreenBotService/LB/PublicListener/Resource": [
-    {
-      "type": "aws:cdk:logicalId",
-      "data": "GreenBotServiceLBPublicListener8B60763F"
-    }
-  ],
-  "/GreenBotStack/GreenBotService/Service/SecurityGroup/Resource": [
-    {
-      "type": "aws:cdk:logicalId",
-      "data": "GreenBotServiceSecurityGroupC4D010FD"
-    }
-  ],
-  "/GreenBotStack/GreenBotService/Service/SecurityGroup/from GreenBotStackGreenBotServiceLBSecurityGroup5A15007B:80": [
-    {
-      "type": "aws:cdk:logicalId",
-      "data": "GreenBotServiceSecurityGroupfromGreenBotStackGreenBotServiceLBSecurityGroup5A15007B8001496942"
-    }
-  ],
-  "/GreenBotStack/GreenBotService/LB/PublicListener/ECSGroup/Resource": [
-    {
-      "type": "aws:cdk:logicalId",
-      "data": "GreenBotServiceLBPublicListenerECSGroup0ACBD797"
-    }
-  ],
-  "/GreenBotStack/GreenBotService/TaskDef/greenbot/LogGroup/Resource": [
-    {
-      "type": "aws:cdk:logicalId",
-      "data": "GreenBotServiceTaskDefgreenbotLogGroup83BB9046"
+      "data": "SchedulerRoleDefaultPolicy66F774B8"
     }
   ]
 }

@@ -3,7 +3,7 @@
   "DiscordTokenParam1317C241": {
    "Type": "AWS::SSM::Parameter",
    "Properties": {
-    "Description": "Discord bot token (secret; update with your real token in SSM Parameter Store).",
+    "Description": "Discord bot token — update via SSM before starting bot",
     "Name": "/greenbot/discord-token",
     "Tier": "Standard",
     "Type": "String",
@@ -13,478 +13,20 @@
     "aws:cdk:path": "GreenBotStack/DiscordTokenParam/Resource"
    }
   },
-  "GreenBotVpcE322C195": {
-   "Type": "AWS::EC2::VPC",
-   "Properties": {
-    "CidrBlock": "10.0.0.0/16",
-    "EnableDnsHostnames": true,
-    "EnableDnsSupport": true,
-    "InstanceTenancy": "default",
-    "Tags": [
-     {
-      "Key": "Name",
-      "Value": "GreenBotStack/GreenBotVpc"
-     }
-    ]
-   },
-   "Metadata": {
-    "aws:cdk:path": "GreenBotStack/GreenBotVpc/Resource"
-   }
-  },
-  "GreenBotVpcPublicSubnet1Subnet29971BB9": {
-   "Type": "AWS::EC2::Subnet",
-   "Properties": {
-    "AvailabilityZone": {
-     "Fn::Select": [
-      0,
-      {
-       "Fn::GetAZs": ""
-      }
-     ]
-    },
-    "CidrBlock": "10.0.0.0/18",
-    "MapPublicIpOnLaunch": true,
-    "Tags": [
-     {
-      "Key": "aws-cdk:subnet-name",
-      "Value": "Public"
-     },
-     {
-      "Key": "aws-cdk:subnet-type",
-      "Value": "Public"
-     },
-     {
-      "Key": "Name",
-      "Value": "GreenBotStack/GreenBotVpc/PublicSubnet1"
-     }
-    ],
-    "VpcId": {
-     "Ref": "GreenBotVpcE322C195"
-    }
-   },
-   "Metadata": {
-    "aws:cdk:path": "GreenBotStack/GreenBotVpc/PublicSubnet1/Subnet"
-   }
-  },
-  "GreenBotVpcPublicSubnet1RouteTableDCC6DE59": {
-   "Type": "AWS::EC2::RouteTable",
-   "Properties": {
-    "Tags": [
-     {
-      "Key": "Name",
-      "Value": "GreenBotStack/GreenBotVpc/PublicSubnet1"
-     }
-    ],
-    "VpcId": {
-     "Ref": "GreenBotVpcE322C195"
-    }
-   },
-   "Metadata": {
-    "aws:cdk:path": "GreenBotStack/GreenBotVpc/PublicSubnet1/RouteTable"
-   }
-  },
-  "GreenBotVpcPublicSubnet1RouteTableAssociationFE7E9974": {
-   "Type": "AWS::EC2::SubnetRouteTableAssociation",
-   "Properties": {
-    "RouteTableId": {
-     "Ref": "GreenBotVpcPublicSubnet1RouteTableDCC6DE59"
-    },
-    "SubnetId": {
-     "Ref": "GreenBotVpcPublicSubnet1Subnet29971BB9"
-    }
-   },
-   "Metadata": {
-    "aws:cdk:path": "GreenBotStack/GreenBotVpc/PublicSubnet1/RouteTableAssociation"
-   }
-  },
-  "GreenBotVpcPublicSubnet1DefaultRoute3D957CBC": {
-   "Type": "AWS::EC2::Route",
-   "Properties": {
-    "DestinationCidrBlock": "0.0.0.0/0",
-    "GatewayId": {
-     "Ref": "GreenBotVpcIGWD3967159"
-    },
-    "RouteTableId": {
-     "Ref": "GreenBotVpcPublicSubnet1RouteTableDCC6DE59"
-    }
-   },
-   "DependsOn": [
-    "GreenBotVpcVPCGW6992CEEB"
-   ],
-   "Metadata": {
-    "aws:cdk:path": "GreenBotStack/GreenBotVpc/PublicSubnet1/DefaultRoute"
-   }
-  },
-  "GreenBotVpcPublicSubnet1EIPFDE8421B": {
-   "Type": "AWS::EC2::EIP",
-   "Properties": {
-    "Domain": "vpc",
-    "Tags": [
-     {
-      "Key": "Name",
-      "Value": "GreenBotStack/GreenBotVpc/PublicSubnet1"
-     }
-    ]
-   },
-   "Metadata": {
-    "aws:cdk:path": "GreenBotStack/GreenBotVpc/PublicSubnet1/EIP"
-   }
-  },
-  "GreenBotVpcPublicSubnet1NATGateway6F15F494": {
-   "Type": "AWS::EC2::NatGateway",
-   "Properties": {
-    "AllocationId": {
-     "Fn::GetAtt": [
-      "GreenBotVpcPublicSubnet1EIPFDE8421B",
-      "AllocationId"
-     ]
-    },
-    "SubnetId": {
-     "Ref": "GreenBotVpcPublicSubnet1Subnet29971BB9"
-    },
-    "Tags": [
-     {
-      "Key": "Name",
-      "Value": "GreenBotStack/GreenBotVpc/PublicSubnet1"
-     }
-    ]
-   },
-   "DependsOn": [
-    "GreenBotVpcPublicSubnet1DefaultRoute3D957CBC",
-    "GreenBotVpcPublicSubnet1RouteTableAssociationFE7E9974"
-   ],
-   "Metadata": {
-    "aws:cdk:path": "GreenBotStack/GreenBotVpc/PublicSubnet1/NATGateway"
-   }
-  },
-  "GreenBotVpcPublicSubnet2SubnetE8F803C6": {
-   "Type": "AWS::EC2::Subnet",
-   "Properties": {
-    "AvailabilityZone": {
-     "Fn::Select": [
-      1,
-      {
-       "Fn::GetAZs": ""
-      }
-     ]
-    },
-    "CidrBlock": "10.0.64.0/18",
-    "MapPublicIpOnLaunch": true,
-    "Tags": [
-     {
-      "Key": "aws-cdk:subnet-name",
-      "Value": "Public"
-     },
-     {
-      "Key": "aws-cdk:subnet-type",
-      "Value": "Public"
-     },
-     {
-      "Key": "Name",
-      "Value": "GreenBotStack/GreenBotVpc/PublicSubnet2"
-     }
-    ],
-    "VpcId": {
-     "Ref": "GreenBotVpcE322C195"
-    }
-   },
-   "Metadata": {
-    "aws:cdk:path": "GreenBotStack/GreenBotVpc/PublicSubnet2/Subnet"
-   }
-  },
-  "GreenBotVpcPublicSubnet2RouteTable93F89904": {
-   "Type": "AWS::EC2::RouteTable",
-   "Properties": {
-    "Tags": [
-     {
-      "Key": "Name",
-      "Value": "GreenBotStack/GreenBotVpc/PublicSubnet2"
-     }
-    ],
-    "VpcId": {
-     "Ref": "GreenBotVpcE322C195"
-    }
-   },
-   "Metadata": {
-    "aws:cdk:path": "GreenBotStack/GreenBotVpc/PublicSubnet2/RouteTable"
-   }
-  },
-  "GreenBotVpcPublicSubnet2RouteTableAssociationD63CE525": {
-   "Type": "AWS::EC2::SubnetRouteTableAssociation",
-   "Properties": {
-    "RouteTableId": {
-     "Ref": "GreenBotVpcPublicSubnet2RouteTable93F89904"
-    },
-    "SubnetId": {
-     "Ref": "GreenBotVpcPublicSubnet2SubnetE8F803C6"
-    }
-   },
-   "Metadata": {
-    "aws:cdk:path": "GreenBotStack/GreenBotVpc/PublicSubnet2/RouteTableAssociation"
-   }
-  },
-  "GreenBotVpcPublicSubnet2DefaultRouteD00EF6DD": {
-   "Type": "AWS::EC2::Route",
-   "Properties": {
-    "DestinationCidrBlock": "0.0.0.0/0",
-    "GatewayId": {
-     "Ref": "GreenBotVpcIGWD3967159"
-    },
-    "RouteTableId": {
-     "Ref": "GreenBotVpcPublicSubnet2RouteTable93F89904"
-    }
-   },
-   "DependsOn": [
-    "GreenBotVpcVPCGW6992CEEB"
-   ],
-   "Metadata": {
-    "aws:cdk:path": "GreenBotStack/GreenBotVpc/PublicSubnet2/DefaultRoute"
-   }
-  },
-  "GreenBotVpcPublicSubnet2EIP64E99E80": {
-   "Type": "AWS::EC2::EIP",
-   "Properties": {
-    "Domain": "vpc",
-    "Tags": [
-     {
-      "Key": "Name",
-      "Value": "GreenBotStack/GreenBotVpc/PublicSubnet2"
-     }
-    ]
-   },
-   "Metadata": {
-    "aws:cdk:path": "GreenBotStack/GreenBotVpc/PublicSubnet2/EIP"
-   }
-  },
-  "GreenBotVpcPublicSubnet2NATGateway9794F4A8": {
-   "Type": "AWS::EC2::NatGateway",
-   "Properties": {
-    "AllocationId": {
-     "Fn::GetAtt": [
-      "GreenBotVpcPublicSubnet2EIP64E99E80",
-      "AllocationId"
-     ]
-    },
-    "SubnetId": {
-     "Ref": "GreenBotVpcPublicSubnet2SubnetE8F803C6"
-    },
-    "Tags": [
-     {
-      "Key": "Name",
-      "Value": "GreenBotStack/GreenBotVpc/PublicSubnet2"
-     }
-    ]
-   },
-   "DependsOn": [
-    "GreenBotVpcPublicSubnet2DefaultRouteD00EF6DD",
-    "GreenBotVpcPublicSubnet2RouteTableAssociationD63CE525"
-   ],
-   "Metadata": {
-    "aws:cdk:path": "GreenBotStack/GreenBotVpc/PublicSubnet2/NATGateway"
-   }
-  },
-  "GreenBotVpcPrivateSubnet1SubnetBC367C9C": {
-   "Type": "AWS::EC2::Subnet",
-   "Properties": {
-    "AvailabilityZone": {
-     "Fn::Select": [
-      0,
-      {
-       "Fn::GetAZs": ""
-      }
-     ]
-    },
-    "CidrBlock": "10.0.128.0/18",
-    "MapPublicIpOnLaunch": false,
-    "Tags": [
-     {
-      "Key": "aws-cdk:subnet-name",
-      "Value": "Private"
-     },
-     {
-      "Key": "aws-cdk:subnet-type",
-      "Value": "Private"
-     },
-     {
-      "Key": "Name",
-      "Value": "GreenBotStack/GreenBotVpc/PrivateSubnet1"
-     }
-    ],
-    "VpcId": {
-     "Ref": "GreenBotVpcE322C195"
-    }
-   },
-   "Metadata": {
-    "aws:cdk:path": "GreenBotStack/GreenBotVpc/PrivateSubnet1/Subnet"
-   }
-  },
-  "GreenBotVpcPrivateSubnet1RouteTableA79D2E05": {
-   "Type": "AWS::EC2::RouteTable",
-   "Properties": {
-    "Tags": [
-     {
-      "Key": "Name",
-      "Value": "GreenBotStack/GreenBotVpc/PrivateSubnet1"
-     }
-    ],
-    "VpcId": {
-     "Ref": "GreenBotVpcE322C195"
-    }
-   },
-   "Metadata": {
-    "aws:cdk:path": "GreenBotStack/GreenBotVpc/PrivateSubnet1/RouteTable"
-   }
-  },
-  "GreenBotVpcPrivateSubnet1RouteTableAssociation6E457548": {
-   "Type": "AWS::EC2::SubnetRouteTableAssociation",
-   "Properties": {
-    "RouteTableId": {
-     "Ref": "GreenBotVpcPrivateSubnet1RouteTableA79D2E05"
-    },
-    "SubnetId": {
-     "Ref": "GreenBotVpcPrivateSubnet1SubnetBC367C9C"
-    }
-   },
-   "Metadata": {
-    "aws:cdk:path": "GreenBotStack/GreenBotVpc/PrivateSubnet1/RouteTableAssociation"
-   }
-  },
-  "GreenBotVpcPrivateSubnet1DefaultRouteBA86F3CE": {
-   "Type": "AWS::EC2::Route",
-   "Properties": {
-    "DestinationCidrBlock": "0.0.0.0/0",
-    "NatGatewayId": {
-     "Ref": "GreenBotVpcPublicSubnet1NATGateway6F15F494"
-    },
-    "RouteTableId": {
-     "Ref": "GreenBotVpcPrivateSubnet1RouteTableA79D2E05"
-    }
-   },
-   "Metadata": {
-    "aws:cdk:path": "GreenBotStack/GreenBotVpc/PrivateSubnet1/DefaultRoute"
-   }
-  },
-  "GreenBotVpcPrivateSubnet2Subnet032E5F13": {
-   "Type": "AWS::EC2::Subnet",
-   "Properties": {
-    "AvailabilityZone": {
-     "Fn::Select": [
-      1,
-      {
-       "Fn::GetAZs": ""
-      }
-     ]
-    },
-    "CidrBlock": "10.0.192.0/18",
-    "MapPublicIpOnLaunch": false,
-    "Tags": [
-     {
-      "Key": "aws-cdk:subnet-name",
-      "Value": "Private"
-     },
-     {
-      "Key": "aws-cdk:subnet-type",
-      "Value": "Private"
-     },
-     {
-      "Key": "Name",
-      "Value": "GreenBotStack/GreenBotVpc/PrivateSubnet2"
-     }
-    ],
-    "VpcId": {
-     "Ref": "GreenBotVpcE322C195"
-    }
-   },
-   "Metadata": {
-    "aws:cdk:path": "GreenBotStack/GreenBotVpc/PrivateSubnet2/Subnet"
-   }
-  },
-  "GreenBotVpcPrivateSubnet2RouteTable54094DAC": {
-   "Type": "AWS::EC2::RouteTable",
-   "Properties": {
-    "Tags": [
-     {
-      "Key": "Name",
-      "Value": "GreenBotStack/GreenBotVpc/PrivateSubnet2"
-     }
-    ],
-    "VpcId": {
-     "Ref": "GreenBotVpcE322C195"
-    }
-   },
-   "Metadata": {
-    "aws:cdk:path": "GreenBotStack/GreenBotVpc/PrivateSubnet2/RouteTable"
-   }
-  },
-  "GreenBotVpcPrivateSubnet2RouteTableAssociation5CD91EE5": {
-   "Type": "AWS::EC2::SubnetRouteTableAssociation",
-   "Properties": {
-    "RouteTableId": {
-     "Ref": "GreenBotVpcPrivateSubnet2RouteTable54094DAC"
-    },
-    "SubnetId": {
-     "Ref": "GreenBotVpcPrivateSubnet2Subnet032E5F13"
-    }
-   },
-   "Metadata": {
-    "aws:cdk:path": "GreenBotStack/GreenBotVpc/PrivateSubnet2/RouteTableAssociation"
-   }
-  },
-  "GreenBotVpcPrivateSubnet2DefaultRoute466E8887": {
-   "Type": "AWS::EC2::Route",
-   "Properties": {
-    "DestinationCidrBlock": "0.0.0.0/0",
-    "NatGatewayId": {
-     "Ref": "GreenBotVpcPublicSubnet2NATGateway9794F4A8"
-    },
-    "RouteTableId": {
-     "Ref": "GreenBotVpcPrivateSubnet2RouteTable54094DAC"
-    }
-   },
-   "Metadata": {
-    "aws:cdk:path": "GreenBotStack/GreenBotVpc/PrivateSubnet2/DefaultRoute"
-   }
-  },
-  "GreenBotVpcIGWD3967159": {
-   "Type": "AWS::EC2::InternetGateway",
-   "Properties": {
-    "Tags": [
-     {
-      "Key": "Name",
-      "Value": "GreenBotStack/GreenBotVpc"
-     }
-    ]
-   },
-   "Metadata": {
-    "aws:cdk:path": "GreenBotStack/GreenBotVpc/IGW"
-   }
-  },
-  "GreenBotVpcVPCGW6992CEEB": {
-   "Type": "AWS::EC2::VPCGatewayAttachment",
-   "Properties": {
-    "InternetGatewayId": {
-     "Ref": "GreenBotVpcIGWD3967159"
-    },
-    "VpcId": {
-     "Ref": "GreenBotVpcE322C195"
-    }
-   },
-   "Metadata": {
-    "aws:cdk:path": "GreenBotStack/GreenBotVpc/VPCGW"
-   }
-  },
-  "GreenBotCluster46B663AE": {
-   "Type": "AWS::ECS::Cluster",
-   "Properties": {
-    "ClusterName": "greenbot"
-   },
-   "Metadata": {
-    "aws:cdk:path": "GreenBotStack/GreenBotCluster/Resource"
-   }
-  },
   "GreenBotConfigBucketDCA5493A": {
    "Type": "AWS::S3::Bucket",
    "Properties": {
+    "LifecycleConfiguration": {
+     "Rules": [
+      {
+       "ExpirationInDays": 90,
+       "NoncurrentVersionExpiration": {
+        "NoncurrentDays": 30
+       },
+       "Status": "Enabled"
+      }
+     ]
+    },
     "PublicAccessBlockConfiguration": {
      "BlockPublicAcls": true,
      "BlockPublicPolicy": true,
@@ -528,7 +70,7 @@
     "aws:cdk:path": "GreenBotStack/GreenBotStateTable/Resource"
    }
   },
-  "GreenBotTaskRole25121C86": {
+  "GreenBotInstanceRoleD7331226": {
    "Type": "AWS::IAM::Role",
    "Properties": {
     "AssumeRolePolicyDocument": {
@@ -537,18 +79,32 @@
        "Action": "sts:AssumeRole",
        "Effect": "Allow",
        "Principal": {
-        "Service": "ecs-tasks.amazonaws.com"
+        "Service": "ec2.amazonaws.com"
        }
       }
      ],
      "Version": "2012-10-17"
-    }
+    },
+    "ManagedPolicyArns": [
+     {
+      "Fn::Join": [
+       "",
+       [
+        "arn:",
+        {
+         "Ref": "AWS::Partition"
+        },
+        ":iam::aws:policy/AmazonSSMManagedInstanceCore"
+       ]
+      ]
+     }
+    ]
    },
    "Metadata": {
-    "aws:cdk:path": "GreenBotStack/GreenBotTaskRole/Resource"
+    "aws:cdk:path": "GreenBotStack/GreenBotInstanceRole/Resource"
    }
   },
-  "GreenBotTaskRoleDefaultPolicy6E9C30B1": {
+  "GreenBotInstanceRoleDefaultPolicy2629E1D9": {
    "Type": "AWS::IAM::Policy",
    "Properties": {
     "PolicyDocument": {
@@ -569,15 +125,7 @@
           {
            "Ref": "AWS::Partition"
           },
-          ":ssm:",
-          {
-           "Ref": "AWS::Region"
-          },
-          ":",
-          {
-           "Ref": "AWS::AccountId"
-          },
-          ":parameter",
+          ":ssm:us-east-1:544623438535:parameter",
           {
            "Ref": "DiscordTokenParam1317C241"
           }
@@ -659,22 +207,145 @@
          ]
         }
        ]
+      },
+      {
+       "Action": [
+        "s3:GetObject*",
+        "s3:GetBucket*",
+        "s3:List*"
+       ],
+       "Effect": "Allow",
+       "Resource": [
+        {
+         "Fn::Join": [
+          "",
+          [
+           "arn:",
+           {
+            "Ref": "AWS::Partition"
+           },
+           ":s3:::cdk-hnb659fds-assets-544623438535-us-east-1"
+          ]
+         ]
+        },
+        {
+         "Fn::Join": [
+          "",
+          [
+           "arn:",
+           {
+            "Ref": "AWS::Partition"
+           },
+           ":s3:::cdk-hnb659fds-assets-544623438535-us-east-1/*"
+          ]
+         ]
+        }
+       ]
       }
      ],
      "Version": "2012-10-17"
     },
-    "PolicyName": "GreenBotTaskRoleDefaultPolicy6E9C30B1",
+    "PolicyName": "GreenBotInstanceRoleDefaultPolicy2629E1D9",
     "Roles": [
      {
-      "Ref": "GreenBotTaskRole25121C86"
+      "Ref": "GreenBotInstanceRoleD7331226"
      }
     ]
    },
    "Metadata": {
-    "aws:cdk:path": "GreenBotStack/GreenBotTaskRole/DefaultPolicy/Resource"
+    "aws:cdk:path": "GreenBotStack/GreenBotInstanceRole/DefaultPolicy/Resource"
    }
   },
-  "GreenBotExecutionRole74E99CFA": {
+  "GreenBotSGD840EEE9": {
+   "Type": "AWS::EC2::SecurityGroup",
+   "Properties": {
+    "GroupDescription": "GreenBot EC2 - outbound only",
+    "SecurityGroupEgress": [
+     {
+      "CidrIp": "0.0.0.0/0",
+      "Description": "Allow all outbound traffic by default",
+      "IpProtocol": "-1"
+     }
+    ],
+    "VpcId": "vpc-01f154d06b900bad7"
+   },
+   "Metadata": {
+    "aws:cdk:path": "GreenBotStack/GreenBotSG/Resource"
+   }
+  },
+  "GreenBotInstanceInstanceProfile21837BD8": {
+   "Type": "AWS::IAM::InstanceProfile",
+   "Properties": {
+    "Roles": [
+     {
+      "Ref": "GreenBotInstanceRoleD7331226"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "GreenBotStack/GreenBotInstance/InstanceProfile"
+   }
+  },
+  "GreenBotInstance64E7DE54ad7f299dfb67f30e": {
+   "Type": "AWS::EC2::Instance",
+   "Properties": {
+    "AvailabilityZone": "us-east-1a",
+    "IamInstanceProfile": {
+     "Ref": "GreenBotInstanceInstanceProfile21837BD8"
+    },
+    "ImageId": {
+     "Ref": "SsmParameterValueawsserviceamiamazonlinuxlatestal2023amikernel61arm64C96584B6F00A464EAD1953AFF4B05118Parameter"
+    },
+    "InstanceType": "t4g.nano",
+    "NetworkInterfaces": [
+     {
+      "AssociatePublicIpAddress": true,
+      "DeviceIndex": "0",
+      "GroupSet": [
+       {
+        "Fn::GetAtt": [
+         "GreenBotSGD840EEE9",
+         "GroupId"
+        ]
+       }
+      ],
+      "SubnetId": "subnet-0a5d9ab86c93a5aa3"
+     }
+    ],
+    "Tags": [
+     {
+      "Key": "Name",
+      "Value": "GreenBotStack/GreenBotInstance"
+     }
+    ],
+    "UserData": {
+     "Fn::Base64": {
+      "Fn::Join": [
+       "",
+       [
+        "#!/bin/bash\nset -e\ndnf install -y nodejs20 unzip\nmkdir -p /opt/greenbot\naws s3 cp s3://cdk-hnb659fds-assets-544623438535-us-east-1/b124f39064c813841a2ea1c24fb6cb61d5e42ecdccee5cfb0e49eead00212228.zip /tmp/greenbot.zip\nunzip -o /tmp/greenbot.zip -d /opt/greenbot\ncd /opt/greenbot && npm install --omit=dev 2>&1 | tee /var/log/greenbot-install.log\ncat > /opt/greenbot/.env << 'ENVEOF'\nDISCORD_TOKEN_SSM_PARAM=/greenbot/discord-token\nCONFIG_S3_BUCKET=",
+        {
+         "Ref": "GreenBotConfigBucketDCA5493A"
+        },
+        "\nDYNAMODB_TABLE_NAME=",
+        {
+         "Ref": "GreenBotStateTable0F2194D0"
+        },
+        "\nAWS_REGION=us-east-1\nCONFIG_PATH=/opt/greenbot/config/config.yaml\nENVEOF\ncat > /etc/systemd/system/greenbot.service << 'SVCEOF'\n[Unit]\nDescription=GreenBot Discord Bot\nAfter=network-online.target\nWants=network-online.target\n\n[Service]\nType=simple\nWorkingDirectory=/opt/greenbot\nEnvironmentFile=/opt/greenbot/.env\nExecStart=/usr/bin/node src/index.js\nRestart=always\nRestartSec=10\n\n[Install]\nWantedBy=multi-user.target\nSVCEOF\nsystemctl daemon-reload\nsystemctl enable greenbot\nsystemctl start greenbot"
+       ]
+      ]
+     }
+    }
+   },
+   "DependsOn": [
+    "GreenBotInstanceRoleDefaultPolicy2629E1D9",
+    "GreenBotInstanceRoleD7331226"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "GreenBotStack/GreenBotInstance/Resource"
+   }
+  },
+  "SchedulerRole59E73443": {
    "Type": "AWS::IAM::Role",
    "Properties": {
     "AssumeRolePolicyDocument": {
@@ -683,465 +354,166 @@
        "Action": "sts:AssumeRole",
        "Effect": "Allow",
        "Principal": {
-        "Service": "ecs-tasks.amazonaws.com"
+        "Service": "scheduler.amazonaws.com"
        }
       }
      ],
      "Version": "2012-10-17"
-    },
-    "ManagedPolicyArns": [
-     {
-      "Fn::Join": [
-       "",
-       [
-        "arn:",
-        {
-         "Ref": "AWS::Partition"
-        },
-        ":iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy"
-       ]
-      ]
-     }
-    ]
+    }
    },
    "Metadata": {
-    "aws:cdk:path": "GreenBotStack/GreenBotExecutionRole/Resource"
+    "aws:cdk:path": "GreenBotStack/SchedulerRole/Resource"
    }
   },
-  "GreenBotExecutionRoleDefaultPolicy84CEB20B": {
+  "SchedulerRoleDefaultPolicy66F774B8": {
    "Type": "AWS::IAM::Policy",
    "Properties": {
     "PolicyDocument": {
      "Statement": [
       {
        "Action": [
-        "ecr:BatchCheckLayerAvailability",
-        "ecr:GetDownloadUrlForLayer",
-        "ecr:BatchGetImage"
+        "ec2:StopInstances",
+        "ec2:StartInstances"
        ],
        "Effect": "Allow",
        "Resource": {
         "Fn::Join": [
          "",
          [
-          "arn:",
+          "arn:aws:ec2:us-east-1:544623438535:instance/",
           {
-           "Ref": "AWS::Partition"
-          },
-          ":ecr:",
-          {
-           "Ref": "AWS::Region"
-          },
-          ":",
-          {
-           "Ref": "AWS::AccountId"
-          },
-          ":repository/",
-          {
-           "Fn::Sub": "cdk-hnb659fds-container-assets-${AWS::AccountId}-${AWS::Region}"
+           "Ref": "GreenBotInstance64E7DE54ad7f299dfb67f30e"
           }
          ]
-        ]
-       }
-      },
-      {
-       "Action": "ecr:GetAuthorizationToken",
-       "Effect": "Allow",
-       "Resource": "*"
-      },
-      {
-       "Action": [
-        "logs:CreateLogStream",
-        "logs:PutLogEvents"
-       ],
-       "Effect": "Allow",
-       "Resource": {
-        "Fn::GetAtt": [
-         "GreenBotServiceTaskDefgreenbotLogGroup83BB9046",
-         "Arn"
         ]
        }
       }
      ],
      "Version": "2012-10-17"
     },
-    "PolicyName": "GreenBotExecutionRoleDefaultPolicy84CEB20B",
+    "PolicyName": "SchedulerRoleDefaultPolicy66F774B8",
     "Roles": [
      {
-      "Ref": "GreenBotExecutionRole74E99CFA"
+      "Ref": "SchedulerRole59E73443"
      }
     ]
    },
    "Metadata": {
-    "aws:cdk:path": "GreenBotStack/GreenBotExecutionRole/DefaultPolicy/Resource"
+    "aws:cdk:path": "GreenBotStack/SchedulerRole/DefaultPolicy/Resource"
    }
   },
-  "GreenBotServiceLB528E0A79": {
-   "Type": "AWS::ElasticLoadBalancingV2::LoadBalancer",
+  "StopSchedule": {
+   "Type": "AWS::Scheduler::Schedule",
    "Properties": {
-    "LoadBalancerAttributes": [
-     {
-      "Key": "deletion_protection.enabled",
-      "Value": "false"
-     }
-    ],
-    "Scheme": "internet-facing",
-    "SecurityGroups": [
-     {
-      "Fn::GetAtt": [
-       "GreenBotServiceLBSecurityGroupEF6B1D9D",
-       "GroupId"
-      ]
-     }
-    ],
-    "Subnets": [
-     {
-      "Ref": "GreenBotVpcPublicSubnet1Subnet29971BB9"
-     },
-     {
-      "Ref": "GreenBotVpcPublicSubnet2SubnetE8F803C6"
-     }
-    ],
-    "Type": "application"
-   },
-   "DependsOn": [
-    "GreenBotVpcPublicSubnet1DefaultRoute3D957CBC",
-    "GreenBotVpcPublicSubnet1RouteTableAssociationFE7E9974",
-    "GreenBotVpcPublicSubnet2DefaultRouteD00EF6DD",
-    "GreenBotVpcPublicSubnet2RouteTableAssociationD63CE525"
-   ],
-   "Metadata": {
-    "aws:cdk:path": "GreenBotStack/GreenBotService/LB/Resource"
-   }
-  },
-  "GreenBotServiceLBSecurityGroupEF6B1D9D": {
-   "Type": "AWS::EC2::SecurityGroup",
-   "Properties": {
-    "GroupDescription": "Automatically created Security Group for ELB GreenBotStackGreenBotServiceLBC99C4386",
-    "SecurityGroupIngress": [
-     {
-      "CidrIp": "0.0.0.0/0",
-      "Description": "Allow from anyone on port 80",
-      "FromPort": 80,
-      "IpProtocol": "tcp",
-      "ToPort": 80
-     }
-    ],
-    "VpcId": {
-     "Ref": "GreenBotVpcE322C195"
-    }
-   },
-   "Metadata": {
-    "aws:cdk:path": "GreenBotStack/GreenBotService/LB/SecurityGroup/Resource"
-   }
-  },
-  "GreenBotServiceLBSecurityGrouptoGreenBotStackGreenBotServiceSecurityGroup5D181DD480D0730BD9": {
-   "Type": "AWS::EC2::SecurityGroupEgress",
-   "Properties": {
-    "Description": "Load balancer to target",
-    "DestinationSecurityGroupId": {
-     "Fn::GetAtt": [
-      "GreenBotServiceSecurityGroupC4D010FD",
-      "GroupId"
-     ]
+    "FlexibleTimeWindow": {
+     "Mode": "OFF"
     },
-    "FromPort": 80,
-    "GroupId": {
-     "Fn::GetAtt": [
-      "GreenBotServiceLBSecurityGroupEF6B1D9D",
-      "GroupId"
-     ]
-    },
-    "IpProtocol": "tcp",
-    "ToPort": 80
-   },
-   "Metadata": {
-    "aws:cdk:path": "GreenBotStack/GreenBotService/LB/SecurityGroup/to GreenBotStackGreenBotServiceSecurityGroup5D181DD4:80"
-   }
-  },
-  "GreenBotServiceLBPublicListener8B60763F": {
-   "Type": "AWS::ElasticLoadBalancingV2::Listener",
-   "Properties": {
-    "DefaultActions": [
-     {
-      "TargetGroupArn": {
-       "Ref": "GreenBotServiceLBPublicListenerECSGroup0ACBD797"
-      },
-      "Type": "forward"
-     }
-    ],
-    "LoadBalancerArn": {
-     "Ref": "GreenBotServiceLB528E0A79"
-    },
-    "Port": 80,
-    "Protocol": "HTTP"
-   },
-   "Metadata": {
-    "aws:cdk:path": "GreenBotStack/GreenBotService/LB/PublicListener/Resource"
-   }
-  },
-  "GreenBotServiceLBPublicListenerECSGroup0ACBD797": {
-   "Type": "AWS::ElasticLoadBalancingV2::TargetGroup",
-   "Properties": {
-    "Port": 80,
-    "Protocol": "HTTP",
-    "TargetGroupAttributes": [
-     {
-      "Key": "stickiness.enabled",
-      "Value": "false"
-     }
-    ],
-    "TargetType": "ip",
-    "VpcId": {
-     "Ref": "GreenBotVpcE322C195"
-    }
-   },
-   "Metadata": {
-    "aws:cdk:path": "GreenBotStack/GreenBotService/LB/PublicListener/ECSGroup/Resource"
-   }
-  },
-  "GreenBotServiceTaskDef59F8BE18": {
-   "Type": "AWS::ECS::TaskDefinition",
-   "Properties": {
-    "ContainerDefinitions": [
-     {
-      "Environment": [
-       {
-        "Name": "CONFIG_PATH",
-        "Value": "/usr/src/app/config/config.yaml"
-       },
-       {
-        "Name": "DISCORD_TOKEN_SSM_PARAM",
-        "Value": {
-         "Ref": "DiscordTokenParam1317C241"
-        }
-       },
-       {
-        "Name": "CONFIG_S3_BUCKET",
-        "Value": {
-         "Ref": "GreenBotConfigBucketDCA5493A"
-        }
-       },
-       {
-        "Name": "DYNAMODB_TABLE_NAME",
-        "Value": {
-         "Ref": "GreenBotStateTable0F2194D0"
-        }
-       }
-      ],
-      "Essential": true,
-      "Image": {
-       "Fn::Sub": "${AWS::AccountId}.dkr.ecr.${AWS::Region}.${AWS::URLSuffix}/cdk-hnb659fds-container-assets-${AWS::AccountId}-${AWS::Region}:d2740eb5f2c64c3d60777d684d9078f1a005db89b57c67da406e2a5c29f51a5b"
-      },
-      "LogConfiguration": {
-       "LogDriver": "awslogs",
-       "Options": {
-        "awslogs-group": {
-         "Ref": "GreenBotServiceTaskDefgreenbotLogGroup83BB9046"
+    "ScheduleExpression": "cron(0 23 * * ? *)",
+    "ScheduleExpressionTimezone": "America/Los_Angeles",
+    "Target": {
+     "Arn": "arn:aws:scheduler:::aws-sdk:ec2:stopInstances",
+     "Input": {
+      "Fn::Join": [
+       "",
+       [
+        "{\"InstanceIds\":[\"",
+        {
+         "Ref": "GreenBotInstance64E7DE54ad7f299dfb67f30e"
         },
-        "awslogs-stream-prefix": "GreenBotService",
-        "awslogs-region": {
-         "Ref": "AWS::Region"
-        }
-       }
-      },
-      "Name": "greenbot",
-      "PortMappings": [
-       {
-        "ContainerPort": 80,
-        "Protocol": "tcp"
-       }
+        "\"]}"
+       ]
       ]
-     }
-    ],
-    "Cpu": "256",
-    "ExecutionRoleArn": {
-     "Fn::GetAtt": [
-      "GreenBotExecutionRole74E99CFA",
-      "Arn"
-     ]
-    },
-    "Family": "GreenBotStackGreenBotServiceTaskDef717C6F4D",
-    "Memory": "512",
-    "NetworkMode": "awsvpc",
-    "RequiresCompatibilities": [
-     "FARGATE"
-    ],
-    "TaskRoleArn": {
-     "Fn::GetAtt": [
-      "GreenBotTaskRole25121C86",
-      "Arn"
-     ]
-    }
-   },
-   "Metadata": {
-    "aws:cdk:path": "GreenBotStack/GreenBotService/TaskDef/Resource"
-   }
-  },
-  "GreenBotServiceTaskDefgreenbotLogGroup83BB9046": {
-   "Type": "AWS::Logs::LogGroup",
-   "UpdateReplacePolicy": "Retain",
-   "DeletionPolicy": "Retain",
-   "Metadata": {
-    "aws:cdk:path": "GreenBotStack/GreenBotService/TaskDef/greenbot/LogGroup/Resource"
-   }
-  },
-  "GreenBotService795063EC": {
-   "Type": "AWS::ECS::Service",
-   "Properties": {
-    "Cluster": {
-     "Ref": "GreenBotCluster46B663AE"
-    },
-    "DeploymentConfiguration": {
-     "Alarms": {
-      "AlarmNames": [],
-      "Enable": false,
-      "Rollback": false
      },
-     "MaximumPercent": 200,
-     "MinimumHealthyPercent": 50
-    },
-    "DesiredCount": 1,
-    "EnableECSManagedTags": false,
-    "HealthCheckGracePeriodSeconds": 60,
-    "LaunchType": "FARGATE",
-    "LoadBalancers": [
-     {
-      "ContainerName": "greenbot",
-      "ContainerPort": 80,
-      "TargetGroupArn": {
-       "Ref": "GreenBotServiceLBPublicListenerECSGroup0ACBD797"
-      }
-     }
-    ],
-    "NetworkConfiguration": {
-     "AwsvpcConfiguration": {
-      "AssignPublicIp": "DISABLED",
-      "SecurityGroups": [
-       {
-        "Fn::GetAtt": [
-         "GreenBotServiceSecurityGroupC4D010FD",
-         "GroupId"
-        ]
-       }
-      ],
-      "Subnets": [
-       {
-        "Ref": "GreenBotVpcPrivateSubnet1SubnetBC367C9C"
-       },
-       {
-        "Ref": "GreenBotVpcPrivateSubnet2Subnet032E5F13"
-       }
+     "RoleArn": {
+      "Fn::GetAtt": [
+       "SchedulerRole59E73443",
+       "Arn"
       ]
      }
-    },
-    "TaskDefinition": {
-     "Ref": "GreenBotServiceTaskDef59F8BE18"
     }
    },
-   "DependsOn": [
-    "GreenBotServiceLBPublicListenerECSGroup0ACBD797",
-    "GreenBotServiceLBPublicListener8B60763F",
-    "GreenBotTaskRoleDefaultPolicy6E9C30B1",
-    "GreenBotTaskRole25121C86"
-   ],
    "Metadata": {
-    "aws:cdk:path": "GreenBotStack/GreenBotService/Service/Service"
+    "aws:cdk:path": "GreenBotStack/StopSchedule"
    }
   },
-  "GreenBotServiceSecurityGroupC4D010FD": {
-   "Type": "AWS::EC2::SecurityGroup",
+  "StartSchedule": {
+   "Type": "AWS::Scheduler::Schedule",
    "Properties": {
-    "GroupDescription": "GreenBotStack/GreenBotService/Service/SecurityGroup",
-    "SecurityGroupEgress": [
-     {
-      "CidrIp": "0.0.0.0/0",
-      "Description": "Allow all outbound traffic by default",
-      "IpProtocol": "-1"
+    "FlexibleTimeWindow": {
+     "Mode": "OFF"
+    },
+    "ScheduleExpression": "cron(0 9 * * ? *)",
+    "ScheduleExpressionTimezone": "America/Los_Angeles",
+    "Target": {
+     "Arn": "arn:aws:scheduler:::aws-sdk:ec2:startInstances",
+     "Input": {
+      "Fn::Join": [
+       "",
+       [
+        "{\"InstanceIds\":[\"",
+        {
+         "Ref": "GreenBotInstance64E7DE54ad7f299dfb67f30e"
+        },
+        "\"]}"
+       ]
+      ]
+     },
+     "RoleArn": {
+      "Fn::GetAtt": [
+       "SchedulerRole59E73443",
+       "Arn"
+      ]
      }
-    ],
-    "VpcId": {
-     "Ref": "GreenBotVpcE322C195"
     }
    },
-   "DependsOn": [
-    "GreenBotTaskRoleDefaultPolicy6E9C30B1",
-    "GreenBotTaskRole25121C86"
-   ],
    "Metadata": {
-    "aws:cdk:path": "GreenBotStack/GreenBotService/Service/SecurityGroup/Resource"
+    "aws:cdk:path": "GreenBotStack/StartSchedule"
    }
   },
-  "GreenBotServiceSecurityGroupfromGreenBotStackGreenBotServiceLBSecurityGroup5A15007B8001496942": {
-   "Type": "AWS::EC2::SecurityGroupIngress",
+  "MonthlyBudget": {
+   "Type": "AWS::Budgets::Budget",
    "Properties": {
-    "Description": "Load balancer to target",
-    "FromPort": 80,
-    "GroupId": {
-     "Fn::GetAtt": [
-      "GreenBotServiceSecurityGroupC4D010FD",
-      "GroupId"
-     ]
+    "Budget": {
+     "BudgetLimit": {
+      "Amount": 8,
+      "Unit": "USD"
+     },
+     "BudgetName": "greenbot-monthly",
+     "BudgetType": "COST",
+     "TimeUnit": "MONTHLY"
     },
-    "IpProtocol": "tcp",
-    "SourceSecurityGroupId": {
-     "Fn::GetAtt": [
-      "GreenBotServiceLBSecurityGroupEF6B1D9D",
-      "GroupId"
-     ]
-    },
-    "ToPort": 80
+    "NotificationsWithSubscribers": []
    },
-   "DependsOn": [
-    "GreenBotTaskRoleDefaultPolicy6E9C30B1",
-    "GreenBotTaskRole25121C86"
-   ],
    "Metadata": {
-    "aws:cdk:path": "GreenBotStack/GreenBotService/Service/SecurityGroup/from GreenBotStackGreenBotServiceLBSecurityGroup5A15007B:80"
+    "aws:cdk:path": "GreenBotStack/MonthlyBudget"
    }
   },
   "CDKMetadata": {
    "Type": "AWS::CDK::Metadata",
    "Properties": {
-    "Analytics": "v2:deflate64:H4sIAAAAAAAA/31S0W7bMAz8lr4rauDuB5K0KwIUq+EUfQ1omfVY25IhUgkCw/8+SE6crCv2xLsTRfBOynT240Ev7+DIC1M1i5ZKPewETKPgyPuBuYvck61z8NChoFebDzuTUaHJ9PDemyi/5xuVh7IlswulRYnaFRUuCL5B2eJVv2orZmcIhJydmyN42uax/AJ5BsEjnFTu6QCC18FbK+gtzg3TJme2EgHzu0MraocmeJLTs3ehTzv8V3iqPTL/I29t0qNz1sOmDXwO5QJ/gq8huuLmET/I0sXTV8VZAbLob7Tz3R36A5kppwmOih/0sA6mmTxPaFTVyULnqlIPc7IJjIqg00PhJi3V3LVkUjwTShb2PUiMj/Wq71sy6QVeHFRraMEarL6shC2wkGkdVGXqIFsfMj18fzsF8xe/7SMWtOeeC745fwNfo8yPc0Pj5n4PzCisH51p0G87qOMnQolnusDeMYnzpzUwqtbVrIcXV8/TLngcVYHsgp/ifg3SB1Fp0E6gJluPyroK9SffH7JMZ0u9vPtkooUPVqhDXUz1D7OsI3FMAwAA"
+    "Analytics": "v2:deflate64:H4sIAAAAAAAA/1VQwW7DIAz9lt6JF9H9wLrDtNOipPfKATejCVBhWBWh/PtE0lXr6b2H37ONJcjXPdQ7vHGl9FhNpofcRVSjwBufMrMtOhg3NBjQUqQg3s/uIRbBe8iHpEaKpXBnGxyQaRF6dmi97iEfsZ+ouFZSoidkpsjwVkAYtJBbv3lWbPxk1LxOfLBPxxGdoib4syltSEnIHakUTJw/gk/XYnt++Av9b7AIVt+k00QBSuAuRJ/0UJZav1PoIlpin4IisS7aRRyMG54OUcRXitcUF+G8Jrjwy4+UIGuodxc2pgrJRWMJ2g1/AbN9mLx7AQAA"
    },
    "Metadata": {
     "aws:cdk:path": "GreenBotStack/CDKMetadata/Default"
-   },
-   "Condition": "CDKMetadataAvailable"
+   }
+  }
+ },
+ "Parameters": {
+  "SsmParameterValueawsserviceamiamazonlinuxlatestal2023amikernel61arm64C96584B6F00A464EAD1953AFF4B05118Parameter": {
+   "Type": "AWS::SSM::Parameter::Value<AWS::EC2::Image::Id>",
+   "Default": "/aws/service/ami-amazon-linux-latest/al2023-ami-kernel-6.1-arm64"
+  },
+  "BootstrapVersion": {
+   "Type": "AWS::SSM::Parameter::Value<String>",
+   "Default": "/cdk-bootstrap/hnb659fds/version",
+   "Description": "Version of the CDK Bootstrap resources in this environment, automatically retrieved from SSM Parameter Store. [cdk:skip]"
   }
  },
  "Outputs": {
-  "GreenBotServiceLoadBalancerDNS43B87015": {
+  "InstanceId": {
+   "Description": "EC2 instance ID",
    "Value": {
-    "Fn::GetAtt": [
-     "GreenBotServiceLB528E0A79",
-     "DNSName"
-    ]
-   }
-  },
-  "GreenBotServiceServiceURL56CA3A7F": {
-   "Value": {
-    "Fn::Join": [
-     "",
-     [
-      "http://",
-      {
-       "Fn::GetAtt": [
-        "GreenBotServiceLB528E0A79",
-        "DNSName"
-       ]
-      }
-     ]
-    ]
-   }
-  },
-  "LoadBalancerDNS": {
-   "Value": {
-    "Fn::GetAtt": [
-     "GreenBotServiceLB528E0A79",
-     "DNSName"
-    ]
+    "Ref": "GreenBotInstance64E7DE54ad7f299dfb67f30e"
    }
   },
   "ConfigBucket": {
@@ -1158,279 +530,6 @@
    "Value": {
     "Ref": "DiscordTokenParam1317C241"
    }
-  }
- },
- "Conditions": {
-  "CDKMetadataAvailable": {
-   "Fn::Or": [
-    {
-     "Fn::Or": [
-      {
-       "Fn::Equals": [
-        {
-         "Ref": "AWS::Region"
-        },
-        "af-south-1"
-       ]
-      },
-      {
-       "Fn::Equals": [
-        {
-         "Ref": "AWS::Region"
-        },
-        "ap-east-1"
-       ]
-      },
-      {
-       "Fn::Equals": [
-        {
-         "Ref": "AWS::Region"
-        },
-        "ap-northeast-1"
-       ]
-      },
-      {
-       "Fn::Equals": [
-        {
-         "Ref": "AWS::Region"
-        },
-        "ap-northeast-2"
-       ]
-      },
-      {
-       "Fn::Equals": [
-        {
-         "Ref": "AWS::Region"
-        },
-        "ap-northeast-3"
-       ]
-      },
-      {
-       "Fn::Equals": [
-        {
-         "Ref": "AWS::Region"
-        },
-        "ap-south-1"
-       ]
-      },
-      {
-       "Fn::Equals": [
-        {
-         "Ref": "AWS::Region"
-        },
-        "ap-south-2"
-       ]
-      },
-      {
-       "Fn::Equals": [
-        {
-         "Ref": "AWS::Region"
-        },
-        "ap-southeast-1"
-       ]
-      },
-      {
-       "Fn::Equals": [
-        {
-         "Ref": "AWS::Region"
-        },
-        "ap-southeast-2"
-       ]
-      },
-      {
-       "Fn::Equals": [
-        {
-         "Ref": "AWS::Region"
-        },
-        "ap-southeast-3"
-       ]
-      }
-     ]
-    },
-    {
-     "Fn::Or": [
-      {
-       "Fn::Equals": [
-        {
-         "Ref": "AWS::Region"
-        },
-        "ap-southeast-4"
-       ]
-      },
-      {
-       "Fn::Equals": [
-        {
-         "Ref": "AWS::Region"
-        },
-        "ca-central-1"
-       ]
-      },
-      {
-       "Fn::Equals": [
-        {
-         "Ref": "AWS::Region"
-        },
-        "ca-west-1"
-       ]
-      },
-      {
-       "Fn::Equals": [
-        {
-         "Ref": "AWS::Region"
-        },
-        "cn-north-1"
-       ]
-      },
-      {
-       "Fn::Equals": [
-        {
-         "Ref": "AWS::Region"
-        },
-        "cn-northwest-1"
-       ]
-      },
-      {
-       "Fn::Equals": [
-        {
-         "Ref": "AWS::Region"
-        },
-        "eu-central-1"
-       ]
-      },
-      {
-       "Fn::Equals": [
-        {
-         "Ref": "AWS::Region"
-        },
-        "eu-central-2"
-       ]
-      },
-      {
-       "Fn::Equals": [
-        {
-         "Ref": "AWS::Region"
-        },
-        "eu-north-1"
-       ]
-      },
-      {
-       "Fn::Equals": [
-        {
-         "Ref": "AWS::Region"
-        },
-        "eu-south-1"
-       ]
-      },
-      {
-       "Fn::Equals": [
-        {
-         "Ref": "AWS::Region"
-        },
-        "eu-south-2"
-       ]
-      }
-     ]
-    },
-    {
-     "Fn::Or": [
-      {
-       "Fn::Equals": [
-        {
-         "Ref": "AWS::Region"
-        },
-        "eu-west-1"
-       ]
-      },
-      {
-       "Fn::Equals": [
-        {
-         "Ref": "AWS::Region"
-        },
-        "eu-west-2"
-       ]
-      },
-      {
-       "Fn::Equals": [
-        {
-         "Ref": "AWS::Region"
-        },
-        "eu-west-3"
-       ]
-      },
-      {
-       "Fn::Equals": [
-        {
-         "Ref": "AWS::Region"
-        },
-        "il-central-1"
-       ]
-      },
-      {
-       "Fn::Equals": [
-        {
-         "Ref": "AWS::Region"
-        },
-        "me-central-1"
-       ]
-      },
-      {
-       "Fn::Equals": [
-        {
-         "Ref": "AWS::Region"
-        },
-        "me-south-1"
-       ]
-      },
-      {
-       "Fn::Equals": [
-        {
-         "Ref": "AWS::Region"
-        },
-        "sa-east-1"
-       ]
-      },
-      {
-       "Fn::Equals": [
-        {
-         "Ref": "AWS::Region"
-        },
-        "us-east-1"
-       ]
-      },
-      {
-       "Fn::Equals": [
-        {
-         "Ref": "AWS::Region"
-        },
-        "us-east-2"
-       ]
-      },
-      {
-       "Fn::Equals": [
-        {
-         "Ref": "AWS::Region"
-        },
-        "us-west-1"
-       ]
-      }
-     ]
-    },
-    {
-     "Fn::Equals": [
-      {
-       "Ref": "AWS::Region"
-      },
-      "us-west-2"
-     ]
-    }
-   ]
-  }
- },
- "Parameters": {
-  "BootstrapVersion": {
-   "Type": "AWS::SSM::Parameter::Value<String>",
-   "Default": "/cdk-bootstrap/hnb659fds/version",
-   "Description": "Version of the CDK Bootstrap resources in this environment, automatically retrieved from SSM Parameter Store. [cdk:skip]"
   }
  },
  "Rules": {

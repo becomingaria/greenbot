@@ -11,21 +11,21 @@
     },
     "GreenBotStack": {
       "type": "aws:cloudformation:stack",
-      "environment": "aws://unknown-account/unknown-region",
+      "environment": "aws://544623438535/us-east-1",
       "properties": {
         "templateFile": "GreenBotStack.template.json",
         "terminationProtection": false,
         "validateOnSynth": false,
-        "assumeRoleArn": "arn:${AWS::Partition}:iam::${AWS::AccountId}:role/cdk-hnb659fds-deploy-role-${AWS::AccountId}-${AWS::Region}",
-        "cloudFormationExecutionRoleArn": "arn:${AWS::Partition}:iam::${AWS::AccountId}:role/cdk-hnb659fds-cfn-exec-role-${AWS::AccountId}-${AWS::Region}",
-        "stackTemplateAssetObjectUrl": "s3://cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}/8db500e90e4e323a61829c5100c77871751188394a14a2f161462805bf300d0a.json",
+        "assumeRoleArn": "arn:${AWS::Partition}:iam::544623438535:role/cdk-hnb659fds-deploy-role-544623438535-us-east-1",
+        "cloudFormationExecutionRoleArn": "arn:${AWS::Partition}:iam::544623438535:role/cdk-hnb659fds-cfn-exec-role-544623438535-us-east-1",
+        "stackTemplateAssetObjectUrl": "s3://cdk-hnb659fds-assets-544623438535-us-east-1/534e540023df8eca7ef0827c05d54367ffc7ea25c666c713944178984519f6a4.json",
         "requiresBootstrapStackVersion": 6,
         "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version",
         "additionalDependencies": [
           "GreenBotStack.assets"
         ],
         "lookupRole": {
-          "arn": "arn:${AWS::Partition}:iam::${AWS::AccountId}:role/cdk-hnb659fds-lookup-role-${AWS::AccountId}-${AWS::Region}",
+          "arn": "arn:${AWS::Partition}:iam::544623438535:role/cdk-hnb659fds-lookup-role-544623438535-us-east-1",
           "requiresBootstrapStackVersion": 8,
           "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version"
         }

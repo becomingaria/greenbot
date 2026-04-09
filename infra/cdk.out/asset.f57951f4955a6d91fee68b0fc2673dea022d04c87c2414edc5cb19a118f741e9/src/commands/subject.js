@@ -1,6 +1,7 @@
 import { SlashCommandBuilder } from "@discordjs/builders"
-import { ChannelType, MessageFlags, PermissionFlagsBits } from "discord.js"
+import { ChannelType } from "discord.js"
 import { auditLog } from "../audit.js"
+import { requireAdmin, ensureAdminChannel } from "../utils.js"
 
 export const data = new SlashCommandBuilder()
     .setName("subject")
@@ -55,19 +56,6 @@ export const data = new SlashCommandBuilder()
                     .setRequired(true),
             ),
     )
-    .addSubcommand((sub) =>
-        sub
-            .setName("delete")
-            .setDescription(
-                "Delete a subject category, all its channels, and its role",
-            )
-            .addStringOption((opt) =>
-                opt
-                    .setName("name")
-                    .setDescription("Name of the subject/category to delete")
-                    .setRequired(true),
-            ),
-    )
 
 async function findCategory(guild, identifier) {
     if (!guild) return null
@@ -75,13 +63,12 @@ async function findCategory(guild, identifier) {
     const id = identifier.replace(/[^0-9]/g, "")
     if (id) {
         const byId = guild.channels.cache.get(id)
-        if (byId && byId.type === ChannelType.GuildCategory) return byId
+        if (byId && byId.isCategory()) return byId
     }
 
     return guild.channels.cache.find(
         (c) =>
-            c.type === ChannelType.GuildCategory &&
-            c.name.toLowerCase() === identifier.toLowerCase(),
+            c.isCategory() && c.name.toLowerCase() === identifier.toLowerCase(),
     )
 }
 
@@ -101,33 +88,33 @@ async function ensureSubjectRole(guild, roleName) {
 
 async function setChannelPermissions(channel, role) {
     const everyone = channel.guild.roles.everyone
-
-    const roleAllow = [PermissionFlagsBits.ViewChannel]
-    const everyoneDeny = [PermissionFlagsBits.ViewChannel]
+    const roleOverwrite = {
+        ViewChannel: true,
+    }
+    const everyoneOverwrite = {
+        ViewChannel: false,
+    }
 
     if (channel.type === ChannelType.GuildVoice) {
-        roleAllow.push(PermissionFlagsBits.Connect, PermissionFlagsBits.Speak)
-        everyoneDeny.push(
-            PermissionFlagsBits.Connect,
-            PermissionFlagsBits.Speak,
-        )
+        roleOverwrite.Connect = true
+        roleOverwrite.Speak = true
+        everyoneOverwrite.Connect = false
+        everyoneOverwrite.Speak = false
     } else if (channel.type === ChannelType.GuildText) {
-        roleAllow.push(
-            PermissionFlagsBits.SendMessages,
-            PermissionFlagsBits.SendMessagesInThreads,
-            PermissionFlagsBits.CreatePublicThreads,
-        )
-        everyoneDeny.push(
-            PermissionFlagsBits.SendMessages,
-            PermissionFlagsBits.SendMessagesInThreads,
-            PermissionFlagsBits.CreatePublicThreads,
-            PermissionFlagsBits.CreatePrivateThreads,
-        )
+        roleOverwrite.SendMessages = true
+        roleOverwrite.SendMessagesInThreads = true
+        roleOverwrite.CreatePublicThreads = true
+        roleOverwrite.CreatePrivateThreads = false
+
+        everyoneOverwrite.SendMessages = false
+        everyoneOverwrite.SendMessagesInThreads = false
+        everyoneOverwrite.CreatePublicThreads = false
+        everyoneOverwrite.CreatePrivateThreads = false
     }
 
     await channel.permissionOverwrites.set([
-        { id: everyone.id, deny: everyoneDeny },
-        { id: role.id, allow: roleAllow },
+        { id: everyone.id, deny: everyoneOverwrite },
+        { id: role.id, allow: roleOverwrite },
     ])
 }
 
@@ -135,21 +122,24 @@ export async function execute(interaction, context) {
     if (!interaction.isChatInputCommand()) return
 
     const sub = interaction.options.getSubcommand()
-    const config = context.config ?? context.configManager?.getCurrentConfig?.()
+    const config = context.configManager?.getCurrentConfig?.() ?? context.config
     const guild = interaction.guild
 
     if (!config || !guild) {
         await interaction.reply({
             content: "Missing config or guild context.",
-            flags: MessageFlags.Ephemeral,
+            ephemeral: true,
         })
         return
     }
 
+    if (!ensureAdminChannel(interaction, config)) return
+    if (!requireAdmin(interaction, config)) return
+
     if (!config.features?.subjects) {
         await interaction.reply({
             content: "Subjects are not enabled in config.",
-            flags: MessageFlags.Ephemeral,
+            ephemeral: true,
         })
         return
     }
@@ -158,13 +148,12 @@ export async function execute(interaction, context) {
         const name = interaction.options.getString("name", true).trim()
         const existing = guild.channels.cache.find(
             (c) =>
-                c.type === ChannelType.GuildCategory &&
-                c.name.toLowerCase() === name.toLowerCase(),
+                c.isCategory() && c.name.toLowerCase() === name.toLowerCase(),
         )
         if (existing) {
             await interaction.reply({
                 content: `Category "${name}" already exists.`,
-                flags: MessageFlags.Ephemeral,
+                ephemeral: true,
             })
             return
         }
@@ -187,10 +176,8 @@ export async function execute(interaction, context) {
                       ? ChannelType.GuildForum
                       : ChannelType.GuildText
 
-            const channelName = def.name.replace(/\{subject\}/gi, name)
-
             const channel = await guild.channels.create({
-                name: channelName,
+                name: def.name,
                 type: channelType,
                 parent: category,
             })
@@ -201,7 +188,7 @@ export async function execute(interaction, context) {
             // On top of role restrictions, if locked is set we ensure no one without role can send.
             if (def.locked && channel.type === ChannelType.GuildText) {
                 await channel.permissionOverwrites.edit(role, {
-                    deny: [PermissionFlagsBits.SendMessages],
+                    SendMessages: false,
                 })
             }
 
@@ -209,7 +196,7 @@ export async function execute(interaction, context) {
         }
 
         await auditLog(config, interaction.client, {
-            actor: `${interaction.user.username} (${interaction.user.id})`,
+            actor: `${interaction.user.tag} (${interaction.user.id})`,
             action: "subject.create",
             target: name,
             detail: `created ${created.length} default channels + role ${role.name}`,
@@ -219,7 +206,7 @@ export async function execute(interaction, context) {
             content: `Created subject category **${name}** + role **${role.name}** with default channels: ${
                 created.length ? created.join(", ") : "(none)"
             }`,
-            flags: MessageFlags.Ephemeral,
+            ephemeral: true,
         })
         return
     }
@@ -230,7 +217,7 @@ export async function execute(interaction, context) {
         if (!category) {
             await interaction.reply({
                 content: `Could not find subject category '${subject}'.`,
-                flags: MessageFlags.Ephemeral,
+                ephemeral: true,
             })
             return
         }
@@ -242,7 +229,7 @@ export async function execute(interaction, context) {
         if (!role) {
             await interaction.reply({
                 content: `No role found for subject '${category.name}' (expected '${roleName}').`,
-                flags: MessageFlags.Ephemeral,
+                ephemeral: true,
             })
             return
         }
@@ -251,7 +238,7 @@ export async function execute(interaction, context) {
         if (!member) {
             await interaction.reply({
                 content: "Could not resolve member.",
-                flags: MessageFlags.Ephemeral,
+                ephemeral: true,
             })
             return
         }
@@ -259,7 +246,7 @@ export async function execute(interaction, context) {
         await member.roles.add(role)
 
         await auditLog(config, interaction.client, {
-            actor: `${interaction.user.username} (${interaction.user.id})`,
+            actor: `${interaction.user.tag} (${interaction.user.id})`,
             action: "subject.join",
             target: `${category.name}`,
             detail: `member added role ${role.name}`,
@@ -267,53 +254,7 @@ export async function execute(interaction, context) {
 
         await interaction.reply({
             content: `You have been added to **${role.name}** and can now access subject **${category.name}**.`,
-            flags: MessageFlags.Ephemeral,
-        })
-        return
-    }
-
-    if (sub === "delete") {
-        const name = interaction.options.getString("name", true).trim()
-        const category = await findCategory(guild, name)
-        if (!category) {
-            await interaction.reply({
-                content: `No subject category found matching '${name}'.`,
-                flags: MessageFlags.Ephemeral,
-            })
-            return
-        }
-
-        await interaction.deferReply({ flags: MessageFlags.Ephemeral })
-
-        // Delete all child channels
-        const children = guild.channels.cache.filter(
-            (c) => c.parentId === category.id,
-        )
-        const deletedChannels = []
-        for (const [, child] of children) {
-            deletedChannels.push(child.name)
-            await child.delete()
-        }
-        await category.delete()
-
-        // Delete the associated role if it exists
-        const roleName = roleNameForSubject(config, category.name)
-        const role = guild.roles.cache.find(
-            (r) => r.name.toLowerCase() === roleName.toLowerCase(),
-        )
-        if (role) await role.delete()
-
-        await auditLog(config, interaction.client, {
-            actor: `${interaction.user.username} (${interaction.user.id})`,
-            action: "subject.delete",
-            target: name,
-            detail: `deleted ${deletedChannels.length} channels + role ${role?.name ?? "(none)"}`,
-        })
-
-        await interaction.editReply({
-            content: `Deleted subject **${name}**: removed ${deletedChannels.length} channel(s)${
-                role ? ` and role **${role.name}**` : ""
-            }.`,
+            ephemeral: true,
         })
         return
     }
@@ -327,7 +268,7 @@ export async function execute(interaction, context) {
         if (!category) {
             await interaction.reply({
                 content: `Could not find subject category '${subject}'.`,
-                flags: MessageFlags.Ephemeral,
+                ephemeral: true,
             })
             return
         }
@@ -345,7 +286,7 @@ export async function execute(interaction, context) {
         })
 
         await auditLog(config, interaction.client, {
-            actor: `${interaction.user.username} (${interaction.user.id})`,
+            actor: `${interaction.user.tag} (${interaction.user.id})`,
             action: "subject.channels.add",
             target: channel.id,
             detail: `subject=${category.name}`,
@@ -353,7 +294,7 @@ export async function execute(interaction, context) {
 
         await interaction.reply({
             content: `Created channel <#${channel.id}> under **${category.name}**.`,
-            flags: MessageFlags.Ephemeral,
+            ephemeral: true,
         })
         return
     }

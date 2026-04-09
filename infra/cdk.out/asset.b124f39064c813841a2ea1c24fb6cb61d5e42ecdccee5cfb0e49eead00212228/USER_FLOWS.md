@@ -32,11 +32,7 @@ It is intended to be a short, clear reference for admins and moderators on how t
     - `guild.id` to your server ID.
     - `admin.controlChannelId` to the ID of the admin-only channel you want to use.
     - `admin.allowedUserIds` and/or `admin.allowedRoleIds` to allow specific people to run bot admin commands.
-    - (optional) set `requireDiscordPermissions: true` so Discord-side permissions are also enforced.
-
-3. New behavior: if `admin.controlChannelId` is set, any command coming from that channel is treated as admin-level (no specific user/role checks needed). This allows you to manage access using the channel’s Discord permissions rather than entering caller IDs in config.
-
-4. Start the bot (locally or via Docker/Fargate).
+3. Start the bot (locally or via Docker/Fargate).
 
 ---
 

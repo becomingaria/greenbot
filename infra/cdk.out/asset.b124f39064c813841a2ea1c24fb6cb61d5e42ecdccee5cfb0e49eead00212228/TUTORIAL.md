@@ -102,32 +102,8 @@ npm install
 Next, copy and edit `config/config.yaml`:
 
 - `guild.id` — your server ID
-- `admin.controlChannelId` — admin channel for `/config` and other admin commands (ID or channel name)
-- `admin.allowedUserIds` / `admin.allowedRoleIds` / `admin.allowedRoleNames` — users/roles that can use admin features
-
-### 2.1) Admin channel setup (critical)
-
-1. In Discord, enable Developer Mode:
-    - User settings > Advanced > Developer Mode = ON
-2. Create a dedicated private channel (e.g., `bot-admin`), or choose an existing admin channel.
-3. Right-click the channel -> Copy ID.
-4. In `config/config.yaml`, set:
-
-```yaml
-admin:
-    controlChannelId: "<channel-id>"
-    allowedUserIds:
-        - "<your-user-id>"
-    allowedRoleIds:
-        - "<your-admin-role-id>"
-    requireDiscordPermissions: true
-```
-
-5. In Discord, confirm you can execute admin commands there:
-    - `/config show`
-    - `/config validate`
-
-If you see permission denied, check: the channel ID and user/role IDs are correct, and you are in the allowed group.
+- `admin.controlChannelId` — admin channel for `/config` and other admin commands
+- `admin.allowedUserIds` / `admin.allowedRoleIds` — users/roles that can use admin features
 
 ### 3) Run locally
 
@@ -157,30 +133,6 @@ The primary sections are:
 - `allowedUserIds` (array of strings) — users that can run admin commands
 - `allowedRoleIds` (array of strings) — roles that can run admin commands
 - `requireDiscordPermissions` (bool) — require Discord perms in addition to the above
-
-### `permissions`
-
-- `defaultCommandRoleNames` (array of strings) — role names allowed to run all commands by default
-- `defaultCommandRoleIds` (array of strings) — role IDs allowed to run all commands by default
-- `commandRoles` (map) — per-command specific roles (by command name):
-    - `commandRoles.remind.roleNames` (array)
-    - `commandRoles.remind.roleIds` (array)
-
-Example:
-
-```yaml
-permissions:
-    defaultCommandRoleNames:
-        - "admin"
-    commandRoles:
-        remind:
-            roleNames:
-                - "moderator"
-                - "guardian"
-        subject:
-            roleNames:
-                - "admin"
-```
 
 ### `logging`
 

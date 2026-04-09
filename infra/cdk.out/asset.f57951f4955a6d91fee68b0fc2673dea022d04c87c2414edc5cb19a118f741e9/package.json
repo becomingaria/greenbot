@@ -8,10 +8,7 @@
     "scripts": {
         "start": "node src/index.js",
         "dev": "nodemon --watch src --exec \"node src/index.js\"",
-        "lint": "eslint .",
-        "ship": "./scripts/greenbot.sh ship",
-        "logs": "./scripts/greenbot.sh logs",
-        "status": "./scripts/greenbot.sh status"
+        "lint": "eslint ."
     },
     "dependencies": {
         "@aws-sdk/client-s3": "^3.0.0",

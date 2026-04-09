@@ -1,34 +1,36 @@
 {
   "version": "52.0.0",
   "files": {
-    "8db500e90e4e323a61829c5100c77871751188394a14a2f161462805bf300d0a": {
+    "b124f39064c813841a2ea1c24fb6cb61d5e42ecdccee5cfb0e49eead00212228": {
+      "displayName": "GreenbotCode",
+      "source": {
+        "path": "asset.b124f39064c813841a2ea1c24fb6cb61d5e42ecdccee5cfb0e49eead00212228",
+        "packaging": "zip"
+      },
+      "destinations": {
+        "544623438535-us-east-1-81e850ff": {
+          "bucketName": "cdk-hnb659fds-assets-544623438535-us-east-1",
+          "objectKey": "b124f39064c813841a2ea1c24fb6cb61d5e42ecdccee5cfb0e49eead00212228.zip",
+          "region": "us-east-1",
+          "assumeRoleArn": "arn:${AWS::Partition}:iam::544623438535:role/cdk-hnb659fds-file-publishing-role-544623438535-us-east-1"
+        }
+      }
+    },
+    "534e540023df8eca7ef0827c05d54367ffc7ea25c666c713944178984519f6a4": {
       "displayName": "GreenBotStack Template",
       "source": {
         "path": "GreenBotStack.template.json",
         "packaging": "file"
       },
       "destinations": {
-        "current_account-current_region-f49e84f5": {
-          "bucketName": "cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}",
-          "objectKey": "8db500e90e4e323a61829c5100c77871751188394a14a2f161462805bf300d0a.json",
-          "assumeRoleArn": "arn:${AWS::Partition}:iam::${AWS::AccountId}:role/cdk-hnb659fds-file-publishing-role-${AWS::AccountId}-${AWS::Region}"
+        "544623438535-us-east-1-e125abf8": {
+          "bucketName": "cdk-hnb659fds-assets-544623438535-us-east-1",
+          "objectKey": "534e540023df8eca7ef0827c05d54367ffc7ea25c666c713944178984519f6a4.json",
+          "region": "us-east-1",
+          "assumeRoleArn": "arn:${AWS::Partition}:iam::544623438535:role/cdk-hnb659fds-file-publishing-role-544623438535-us-east-1"
         }
       }
     }
   },
-  "dockerImages": {
-    "d2740eb5f2c64c3d60777d684d9078f1a005db89b57c67da406e2a5c29f51a5b": {
-      "displayName": "GreenBotService/TaskDef/greenbot/AssetImage",
-      "source": {
-        "directory": "asset.d2740eb5f2c64c3d60777d684d9078f1a005db89b57c67da406e2a5c29f51a5b"
-      },
-      "destinations": {
-        "current_account-current_region-4093d30c": {
-          "repositoryName": "cdk-hnb659fds-container-assets-${AWS::AccountId}-${AWS::Region}",
-          "imageTag": "d2740eb5f2c64c3d60777d684d9078f1a005db89b57c67da406e2a5c29f51a5b",
-          "assumeRoleArn": "arn:${AWS::Partition}:iam::${AWS::AccountId}:role/cdk-hnb659fds-image-publishing-role-${AWS::AccountId}-${AWS::Region}"
-        }
-      }
-    }
-  }
+  "dockerImages": {}
 }
