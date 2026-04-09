@@ -157,7 +157,7 @@ export async function execute(interaction, context) {
         const name = interaction.options.getString("name", true).trim()
         const existing = guild.channels.cache.find(
             (c) =>
-                c.isCategory() && c.name.toLowerCase() === name.toLowerCase(),
+                c.type === ChannelType.GuildCategory && c.name.toLowerCase() === name.toLowerCase(),
         )
         if (existing) {
             await interaction.reply({
