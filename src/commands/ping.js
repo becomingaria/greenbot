@@ -12,6 +12,7 @@ export async function execute(interaction) {
         withResponse: true,
         flags: MessageFlags.Ephemeral,
     })
-    const latency = resource.message.createdTimestamp - interaction.createdTimestamp
+    const latency =
+        resource.message.createdTimestamp - interaction.createdTimestamp
     await interaction.editReply(`Pong! ${latency}ms`)
 }

@@ -1,4 +1,10 @@
-import { Client, GatewayIntentBits, MessageFlags, Partials, Collection } from "discord.js"
+import {
+    Client,
+    GatewayIntentBits,
+    MessageFlags,
+    Partials,
+    Collection,
+} from "discord.js"
 import { REST } from "@discordjs/rest"
 import { Routes } from "discord-api-types/v10"
 import { SSMClient, GetParameterCommand } from "@aws-sdk/client-ssm"

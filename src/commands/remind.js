@@ -134,7 +134,7 @@ export const data = new SlashCommandBuilder()
 export async function execute(interaction, context) {
     if (!interaction.isChatInputCommand()) return
 
-    const config = context.configManager?.getCurrentConfig?.() ?? context.config
+    const config = context.config ?? context.configManager?.getCurrentConfig?.()
     if (!config) {
         await interaction.reply({
             content: "Config is not loaded yet.",

@@ -98,7 +98,7 @@ function formatReason(interaction, extra) {
 export async function execute(interaction, context) {
     if (!interaction.isChatInputCommand()) return
 
-    const config = context.configManager?.getCurrentConfig?.() ?? context.config
+    const config = context.config ?? context.configManager?.getCurrentConfig?.()
     const guild = interaction.guild
     if (!config || !guild) {
         await interaction.reply({

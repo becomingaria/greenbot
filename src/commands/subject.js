@@ -135,7 +135,7 @@ export async function execute(interaction, context) {
     if (!interaction.isChatInputCommand()) return
 
     const sub = interaction.options.getSubcommand()
-    const config = context.configManager?.getCurrentConfig?.() ?? context.config
+    const config = context.config ?? context.configManager?.getCurrentConfig?.()
     const guild = interaction.guild
 
     if (!config || !guild) {

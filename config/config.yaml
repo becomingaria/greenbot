@@ -12,19 +12,35 @@
 version: 1
 
 guild:
-    id: "YOUR_GUILD_ID" # required
+    id: "1146311296384507924" # required
 
 admin:
     # Only allow config commands inside this channel
-    controlChannelId: "ADMIN_CHANNEL_ID"
+    controlChannelId: "1484311947783700530" # channel name or channel ID
 
     # Users who can run privileged bot commands (in addition to Discord permissions checks)
     allowedUserIds: []
     # Roles that can run privileged bot commands
     allowedRoleIds: []
+    # Role names that can run privileged bot commands
+    allowedRoleNames: ["admin"]
 
     # Optional: require BOTH bot-allowed AND Discord permission
     requireDiscordPermissions: false
+
+permissions:
+    # Roles that can run any command by default (in addition to admin rules)
+    defaultCommandRoleNames:
+        - "admin"
+    defaultCommandRoleIds: []
+
+    # Per-command role mapping (commandName -> allowed roles)
+    commandRoles:
+        remind:
+            roleNames:
+                - "moderator"
+                - "guardian"
+            roleIds: []
 
 logging:
     level: "info" # debug|info|warn|error
@@ -147,5 +163,14 @@ safeActions:
                 - op: "send_message"
                   channel: "start-here"
                   content: "Welcome! Read the rules and introduce yourself."
+        # Example cleanup action — duplicate and rename for each subject you want to remove.
+        # Usage: /action run name:cleanup-dragons
+        cleanup-dragons:
+            description: "Delete the dragons subject category, channels, and role"
+            steps:
+                - op: "delete_category"
+                  name: "dragons"
+                - op: "delete_role"
+                  role: "dragons"
 
 # End of config

@@ -75,7 +75,7 @@ export async function execute(interaction, context) {
 
     const sub = interaction.options.getSubcommand()
     const { configManager, sanitizeConfig } = context
-    const config = configManager?.getCurrentConfig?.() ?? context.config
+    const config = context.config ?? configManager?.getCurrentConfig?.()
 
     if (!config) {
         await interaction.reply({
