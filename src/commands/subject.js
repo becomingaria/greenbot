@@ -1,5 +1,5 @@
 import { SlashCommandBuilder } from "@discordjs/builders"
-import { ChannelType } from "discord.js"
+import { ChannelType, PermissionFlagsBits } from "discord.js"
 import { auditLog } from "../audit.js"
 
 export const data = new SlashCommandBuilder()
@@ -100,33 +100,30 @@ async function ensureSubjectRole(guild, roleName) {
 
 async function setChannelPermissions(channel, role) {
     const everyone = channel.guild.roles.everyone
-    const roleOverwrite = {
-        ViewChannel: true,
-    }
-    const everyoneOverwrite = {
-        ViewChannel: false,
-    }
+
+    const roleAllow = [PermissionFlagsBits.ViewChannel]
+    const everyoneDeny = [PermissionFlagsBits.ViewChannel]
 
     if (channel.type === ChannelType.GuildVoice) {
-        roleOverwrite.Connect = true
-        roleOverwrite.Speak = true
-        everyoneOverwrite.Connect = false
-        everyoneOverwrite.Speak = false
+        roleAllow.push(PermissionFlagsBits.Connect, PermissionFlagsBits.Speak)
+        everyoneDeny.push(PermissionFlagsBits.Connect, PermissionFlagsBits.Speak)
     } else if (channel.type === ChannelType.GuildText) {
-        roleOverwrite.SendMessages = true
-        roleOverwrite.SendMessagesInThreads = true
-        roleOverwrite.CreatePublicThreads = true
-        roleOverwrite.CreatePrivateThreads = false
-
-        everyoneOverwrite.SendMessages = false
-        everyoneOverwrite.SendMessagesInThreads = false
-        everyoneOverwrite.CreatePublicThreads = false
-        everyoneOverwrite.CreatePrivateThreads = false
+        roleAllow.push(
+            PermissionFlagsBits.SendMessages,
+            PermissionFlagsBits.SendMessagesInThreads,
+            PermissionFlagsBits.CreatePublicThreads,
+        )
+        everyoneDeny.push(
+            PermissionFlagsBits.SendMessages,
+            PermissionFlagsBits.SendMessagesInThreads,
+            PermissionFlagsBits.CreatePublicThreads,
+            PermissionFlagsBits.CreatePrivateThreads,
+        )
     }
 
     await channel.permissionOverwrites.set([
-        { id: everyone.id, deny: everyoneOverwrite },
-        { id: role.id, allow: roleOverwrite },
+        { id: everyone.id, deny: everyoneDeny },
+        { id: role.id, allow: roleAllow },
     ])
 }
 
@@ -157,7 +154,8 @@ export async function execute(interaction, context) {
         const name = interaction.options.getString("name", true).trim()
         const existing = guild.channels.cache.find(
             (c) =>
-                c.type === ChannelType.GuildCategory && c.name.toLowerCase() === name.toLowerCase(),
+                c.type === ChannelType.GuildCategory &&
+                c.name.toLowerCase() === name.toLowerCase(),
         )
         if (existing) {
             await interaction.reply({
@@ -199,7 +197,7 @@ export async function execute(interaction, context) {
             // On top of role restrictions, if locked is set we ensure no one without role can send.
             if (def.locked && channel.type === ChannelType.GuildText) {
                 await channel.permissionOverwrites.edit(role, {
-                    SendMessages: false,
+                    deny: [PermissionFlagsBits.SendMessages],
                 })
             }
 
