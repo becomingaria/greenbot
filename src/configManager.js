@@ -163,6 +163,7 @@ export class ConfigManager {
         const validated = candidate.config
         await this.saveConfig(validated)
         this.configs.set(guildId, validated)
+        this.defaultConfig = validated
         return { config: validated, candidate }
     }
 
