@@ -91,6 +91,45 @@ export async function runSafeAction(actionName, interaction, config) {
                 results.push({ step, success: true })
                 break
             }
+            case "delete_category": {
+                const category = guild.channels.cache.find(
+                    (c) => c.isCategory() && c.name === step.name,
+                )
+                if (!category) {
+                    results.push({
+                        step,
+                        success: false,
+                        error: `Category '${step.name}' not found`,
+                    })
+                    break
+                }
+                // Delete all child channels first
+                const children = guild.channels.cache.filter(
+                    (c) => c.parentId === category.id,
+                )
+                for (const [, child] of children) {
+                    await child.delete()
+                }
+                await category.delete()
+                results.push({ step, success: true })
+                break
+            }
+            case "delete_role": {
+                const role = guild.roles.cache.find(
+                    (r) => r.name === step.role || r.id === step.role,
+                )
+                if (!role) {
+                    results.push({
+                        step,
+                        success: false,
+                        error: `Role '${step.role}' not found`,
+                    })
+                    break
+                }
+                await role.delete()
+                results.push({ step, success: true })
+                break
+            }
             case "archive_channel": {
                 const channel = guild.channels.cache.find(
                     (c) => c.name === step.channel,

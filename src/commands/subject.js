@@ -2,7 +2,6 @@ import { SlashCommandBuilder } from "@discordjs/builders"
 import { ChannelType } from "discord.js"
 import { auditLog } from "../audit.js"
 
-
 export const data = new SlashCommandBuilder()
     .setName("subject")
     .setDescription("Manage subject categories and channels")
@@ -53,6 +52,19 @@ export const data = new SlashCommandBuilder()
                 opt
                     .setName("subject")
                     .setDescription("Subject name or category id")
+                    .setRequired(true),
+            ),
+    )
+    .addSubcommand((sub) =>
+        sub
+            .setName("delete")
+            .setDescription(
+                "Delete a subject category, all its channels, and its role",
+            )
+            .addStringOption((opt) =>
+                opt
+                    .setName("name")
+                    .setDescription("Name of the subject/category to delete")
                     .setRequired(true),
             ),
     )
@@ -132,7 +144,6 @@ export async function execute(interaction, context) {
         })
         return
     }
-
 
     if (!config.features?.subjects) {
         await interaction.reply({
@@ -254,6 +265,51 @@ export async function execute(interaction, context) {
 
         await interaction.reply({
             content: `You have been added to **${role.name}** and can now access subject **${category.name}**.`,
+            ephemeral: true,
+        })
+        return
+    }
+
+    if (sub === "delete") {
+        const name = interaction.options.getString("name", true).trim()
+        const category = await findCategory(guild, name)
+        if (!category) {
+            await interaction.reply({
+                content: `No subject category found matching '${name}'.`,
+                ephemeral: true,
+            })
+            return
+        }
+
+        // Delete all child channels
+        const children = guild.channels.cache.filter(
+            (c) => c.parentId === category.id,
+        )
+        const deletedChannels = []
+        for (const [, child] of children) {
+            deletedChannels.push(child.name)
+            await child.delete()
+        }
+        await category.delete()
+
+        // Delete the associated role if it exists
+        const roleName = roleNameForSubject(config, category.name)
+        const role = guild.roles.cache.find(
+            (r) => r.name.toLowerCase() === roleName.toLowerCase(),
+        )
+        if (role) await role.delete()
+
+        await auditLog(config, interaction.client, {
+            actor: `${interaction.user.tag} (${interaction.user.id})`,
+            action: "subject.delete",
+            target: name,
+            detail: `deleted ${deletedChannels.length} channels + role ${role?.name ?? "(none)"}`,
+        })
+
+        await interaction.reply({
+            content: `Deleted subject **${name}**: removed ${deletedChannels.length} channel(s)${
+                role ? ` and role **${role.name}**` : ""
+            }.`,
             ephemeral: true,
         })
         return
